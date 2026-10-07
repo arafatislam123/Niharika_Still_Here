@@ -1,0 +1,17 @@
+node_modules/
+dist/
+dev-dist/
+*.local
+.env*
+
+# test and audit output
+playwright-report/
+test-results/
+.lighthouseci/
+coverage/
+
+# copied from node_modules on install (scripts/copy-decoders.mjs)
+public/decoders/meshopt/meshopt_decoder.js
+
+.DS_Store
+Thumbs.db

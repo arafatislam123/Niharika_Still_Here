@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      # Turn on verified-only content for main by setting the repository variable STRICT_CONTENT=true
+      # (Settings -> Secrets and variables -> Actions -> Variables) before the feature freeze.
+      STRICT_CONTENT: ${{ github.ref == 'refs/heads/main' && vars.STRICT_CONTENT || 'false' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+
+      # validate content + typecheck + vite build + size-limit budgets
+      - run: npm run build
+
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+
+      - name: Lighthouse CI
+        run: npx --yes @lhci/cli@0.14.x autorun
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reports
+          path: |
+            playwright-report
+            .lighthouseci
+          if-no-files-found: ignore

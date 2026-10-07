@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Initial load (landing route: HTML shell JS + CSS)",
+    "path": ["dist/assets/index-*.js", "dist/assets/index-*.css"],
+    "limit": "250 KB"
+  },
+  {
+    "name": "Map route chunk (Leaflet + Ghost Map)",
+    "path": ["dist/assets/MapPage-*.js", "dist/assets/MapPage-*.css"],
+    "limit": "80 KB"
+  }
+]
