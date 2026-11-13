@@ -9,6 +9,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import type { WorldId } from '../data/types';
 import { useLang } from '../i18n';
 import { useFullscreen } from '../lib/fullscreen';
+import { createSpaceAudio, type SpaceAudio } from './spaceAudio';
 import type { StringKey } from '../i18n/strings';
 import {
   disposeTree,
@@ -94,8 +95,27 @@ export default function SolarSystem({
   // Clicking empty space opens the solar system in full screen.
   const wrapRef = useRef<HTMLDivElement>(null);
   const fullscreen = useFullscreen(wrapRef);
-  const fsRef = useRef(fullscreen);
-  fsRef.current = fullscreen;
+  // "Sound of the universe" plays only in full screen. It must start inside the click itself.
+  const audioRef = useRef<SpaceAudio | null>(null);
+  const [muted, setMuted] = useState(false);
+  const enterFullscreen = () => {
+    audioRef.current ??= createSpaceAudio();
+    audioRef.current.start();
+    fullscreen.enter();
+  };
+  useEffect(() => {
+    if (!fullscreen.active) audioRef.current?.stop();
+  }, [fullscreen.active]);
+  useEffect(() => audioRef.current?.setMuted(muted), [muted]);
+  useEffect(
+    () => () => {
+      audioRef.current?.dispose();
+      audioRef.current = null;
+    },
+    [],
+  );
+  const fsRef = useRef({ ...fullscreen, enter: enterFullscreen });
+  fsRef.current = { ...fullscreen, enter: enterFullscreen };
   const select = (target: WorldId) => {
     fsRef.current.exit();
     onSelectRef.current(target);
@@ -409,16 +429,35 @@ export default function SolarSystem({
           ),
         )}
       </div>
-      <p className="pointer-events-none absolute bottom-3 left-3 rounded-full bg-space/70 px-3 py-1 text-xs text-muted">
-        {fullscreen.active ? t('solar.hintFullscreen') : t('solar.hint')}
-      </p>
-      <button
-        type="button"
-        onClick={() => (fullscreen.active ? fullscreen.exit() : fullscreen.enter())}
-        className="absolute right-3 top-3 rounded-full bg-space/80 px-3 py-1.5 text-xs font-semibold text-ink hover:bg-raised"
-      >
-        {fullscreen.active ? t('solar.exitFullscreen') : t('solar.fullscreen')}
-      </button>
+      <div className="pointer-events-none absolute bottom-3 left-3 right-3 flex flex-col items-start gap-1.5">
+        {fullscreen.active && !muted && (
+          <p className="max-w-xl rounded-2xl bg-space/70 px-3 py-1 text-[11px] text-muted">
+            {t('solar.soundNote')}
+          </p>
+        )}
+        <p className="rounded-full bg-space/70 px-3 py-1 text-xs text-muted">
+          {fullscreen.active ? t('solar.hintFullscreen') : t('solar.hint')}
+        </p>
+      </div>
+      <div className="absolute right-3 top-3 flex gap-2">
+        {fullscreen.active && (
+          <button
+            type="button"
+            aria-pressed={!muted}
+            onClick={() => setMuted((m) => !m)}
+            className="rounded-full bg-space/80 px-3 py-1.5 text-xs font-semibold text-ink hover:bg-raised"
+          >
+            {muted ? t('solar.soundOff') : t('solar.soundOn')}
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={() => (fullscreen.active ? fullscreen.exit() : enterFullscreen())}
+          className="rounded-full bg-space/80 px-3 py-1.5 text-xs font-semibold text-ink hover:bg-raised"
+        >
+          {fullscreen.active ? t('solar.exitFullscreen') : t('solar.fullscreen')}
+        </button>
+      </div>
     </div>
   );
 }
