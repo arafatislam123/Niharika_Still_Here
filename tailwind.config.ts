@@ -3,13 +3,6 @@ import type { Config } from 'tailwindcss';
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
-    screens: {
-      sm: '640px',
-      md: '768px',
-      two: '900px', // two-column letter + fact box (spec 7.2)
-      lg: '1024px',
-      xl: '1280px',
-    },
     container: {
       center: true,
       padding: '1rem',
@@ -17,12 +10,16 @@ export default {
     },
     extend: {
       colors: {
-        space: 'var(--color-bg)',
-        surface: 'var(--color-surface)',
-        ink: 'var(--color-text)',
-        muted: 'var(--color-text-muted)',
-        dust: 'var(--color-dust)',
-        accent: 'var(--color-accent)',
+        space: 'rgb(var(--color-bg) / <alpha-value>)',
+        surface: 'rgb(var(--color-surface) / <alpha-value>)',
+        raised: 'rgb(var(--color-raised) / <alpha-value>)',
+        line: 'rgb(var(--color-line) / <alpha-value>)',
+        ink: 'rgb(var(--color-text) / <alpha-value>)',
+        muted: 'rgb(var(--color-text-muted) / <alpha-value>)',
+        accent: 'rgb(var(--color-accent) / <alpha-value>)',
+        moon: 'rgb(var(--color-moon) / <alpha-value>)',
+        mars: 'rgb(var(--color-mars) / <alpha-value>)',
+        deep: 'rgb(var(--color-deep) / <alpha-value>)',
       },
       fontFamily: {
         sans: 'var(--font-ui)',

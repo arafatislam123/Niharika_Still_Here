@@ -5,16 +5,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  {
-    ignores: [
-      'dist',
-      'dev-dist',
-      'public/decoders',
-      'playwright-report',
-      'test-results',
-      '.lighthouseci',
-    ],
-  },
+  { ignores: ['dist', 'coverage'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -24,15 +15,10 @@ export default tseslint.config(
     settings: { react: { version: '18.3' } },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      // FR-I18N-1: all UI text comes from content/<locale>/strings.json via t().
-      'react/jsx-no-literals': [
-        'warn',
-        { noStrings: false, ignoreProps: true, allowedStrings: ['−', '+', '·', '→', '←', '✓'] },
-      ],
     },
   },
   {
-    files: ['scripts/**/*.{ts,mjs}', 'tests/**/*.ts', '*.config.{ts,js}'],
+    files: ['*.config.{ts,js}'],
     languageOptions: { globals: globals.node },
   },
 );

@@ -1,5 +1,7 @@
 # STILL HERE: System Design
 
+> **Note (v0.2):** this document describes the earlier "STILL HERE" design. The project is now **Forgotten Explorers** (see the README). It is kept for reference only.
+
 **Version:** 1.0 (pre-hackathon) · **Companion to:** SRS & Technical Specification v1.0
 **Audience:** the build team. Read this before hour 0; it is the "how", the spec is the "what".
 

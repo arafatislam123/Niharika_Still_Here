@@ -1,5 +1,3 @@
-# Production uses the same command. To enforce verified-only content (docs/SYSTEM_DESIGN.md §5.5),
-# set the environment variable STRICT_CONTENT=true in the Netlify UI before the feature freeze.
 [build]
   command = "npm run build"
   publish = "dist"
@@ -7,26 +5,23 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# SPA fallback: deep links like /machine/spirit work on refresh.
+# SPA fallback: deep links like /artifacts/spirit work on refresh.
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
+# The only third-party requests are the public NASA Image and Video Library API and its image host.
+# If you set VITE_AI_API_URL, add that origin to connect-src too.
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://trek.nasa.gov; connect-src 'self' https://trek.nasa.gov; media-src 'self'; font-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://images-assets.nasa.gov; connect-src 'self' https://images-api.nasa.gov; media-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
     Referrer-Policy = "strict-origin-when-cross-origin"
     X-Content-Type-Options = "nosniff"
-    Permissions-Policy = "camera=(self), geolocation=(), microphone=()"
+    Permissions-Policy = "camera=(), geolocation=(), microphone=()"
 
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/sw.js"
-  [headers.values]
-    Cache-Control = "no-cache"

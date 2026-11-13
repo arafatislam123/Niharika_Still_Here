@@ -1,0 +1,218 @@
+import type { LegacyLink, TimelineEvent, World } from './types';
+
+export const worlds: World[] = [
+  {
+    id: 'moon',
+    name: 'The Moon',
+    tagline: 'Where humans first left footprints',
+    description:
+      'Six Apollo crews landed on the Moon between 1969 and 1972. Parts of their spacecraft are still sitting exactly where they left them.',
+    color: 'rgb(var(--color-moon))',
+  },
+  {
+    id: 'mars',
+    name: 'Mars',
+    tagline: 'The red planet, full of robot explorers',
+    description:
+      'Rovers and landers have explored Mars since 1976. Some still work, and others sit silently where they finished their journeys.',
+    color: 'rgb(var(--color-mars))',
+  },
+  {
+    id: 'deep-space',
+    name: 'Deep Space',
+    tagline: 'Travellers heading for the stars',
+    description:
+      'Some spacecraft never land at all. They fly past planets and keep going, out beyond the edge of the solar system.',
+    color: 'rgb(var(--color-deep))',
+  },
+];
+
+export const getWorld = (id: string) => worlds.find((w) => w.id === id);
+
+export const timeline: TimelineEvent[] = [
+  {
+    year: 1962,
+    date: '14 December 1962',
+    title: 'Mariner 2 visits Venus',
+    text: 'The first spacecraft to successfully fly past another planet.',
+    world: 'venus',
+    sourceId: 'src-mariner2',
+  },
+  {
+    year: 1965,
+    date: '14–15 July 1965',
+    title: 'Mariner 4 photographs Mars',
+    text: 'The first close-up pictures of Mars show a cratered, dry-looking world.',
+    world: 'mars',
+    sourceId: 'src-mariner4',
+  },
+  {
+    year: 1969,
+    date: '20 July 1969',
+    title: 'Apollo 11 lands on the Moon',
+    text: 'Neil Armstrong and Buzz Aldrin walk on the Moon. Eagle’s descent stage stays behind.',
+    world: 'moon',
+    artifactId: 'apollo-11-descent-stage',
+    sourceId: 'src-apollo11',
+  },
+  {
+    year: 1972,
+    date: '2 March 1972',
+    title: 'Pioneer 10 launches',
+    text: 'It will become the first spacecraft to cross the asteroid belt and visit Jupiter.',
+    world: 'deep-space',
+    artifactId: 'pioneer-10',
+    sourceId: 'src-pioneer10',
+  },
+  {
+    year: 1972,
+    date: 'December 1972',
+    title: 'Apollo 17: the last Moon landing (so far)',
+    text: 'The last time humans walked on the Moon in the 20th century.',
+    world: 'moon',
+    sourceId: 'src-apollo17',
+  },
+  {
+    year: 1973,
+    date: '3 December 1973',
+    title: 'Pioneer 10 reaches Jupiter',
+    text: 'The first close-up look at the solar system’s biggest planet.',
+    world: 'jupiter',
+    artifactId: 'pioneer-10',
+    sourceId: 'src-pioneer10',
+  },
+  {
+    year: 1976,
+    date: '20 July 1976',
+    title: 'Viking 1 lands on Mars',
+    text: 'The first successful NASA landing on Mars, seven years to the day after Apollo 11.',
+    world: 'mars',
+    sourceId: 'src-viking',
+  },
+  {
+    year: 1977,
+    date: 'August–September 1977',
+    title: 'Voyager 1 and 2 launch',
+    text: 'Following Pioneer’s path, the twin Voyagers head for the outer planets.',
+    world: 'deep-space',
+    sourceId: 'src-voyager',
+  },
+  {
+    year: 1997,
+    date: '4 July 1997',
+    title: 'Pathfinder and Sojourner land on Mars',
+    text: 'Sojourner becomes the first wheeled rover to explore another planet.',
+    world: 'mars',
+    artifactId: 'sojourner',
+    sourceId: 'src-pathfinder',
+  },
+  {
+    year: 2003,
+    date: '23 January 2003',
+    title: 'Pioneer 10’s last signal',
+    text: 'Earth hears Pioneer 10 for the last time, about 12 billion km away.',
+    world: 'deep-space',
+    artifactId: 'pioneer-10',
+    sourceId: 'src-pioneer10',
+  },
+  {
+    year: 2004,
+    date: 'January 2004',
+    title: 'Spirit and Opportunity land on Mars',
+    text: 'Two twin rovers land on opposite sides of Mars, each planned for 90 sols.',
+    world: 'mars',
+    artifactId: 'opportunity',
+    sourceId: 'src-opportunity',
+  },
+  {
+    year: 2008,
+    date: '25 May 2008',
+    title: 'Phoenix lands in the Martian Arctic',
+    text: 'Phoenix digs up water ice just under the surface.',
+    world: 'mars',
+    artifactId: 'phoenix',
+    sourceId: 'src-phoenix',
+  },
+  {
+    year: 2010,
+    date: '22 March 2010',
+    title: 'Spirit’s last signal',
+    text: 'Stuck in soft soil, Spirit sends its last message during the Martian winter.',
+    world: 'mars',
+    artifactId: 'spirit',
+    sourceId: 'src-spirit',
+  },
+  {
+    year: 2012,
+    date: 'August 2012',
+    title: 'Curiosity lands on Mars',
+    text: 'A car-sized rover powered by radioactive heat, built on lessons from earlier rovers.',
+    world: 'mars',
+    sourceId: 'src-curiosity',
+  },
+  {
+    year: 2018,
+    date: '10 June 2018',
+    title: 'Opportunity’s last signal',
+    text: 'A planet-wide dust storm blocks the sunlight. Opportunity goes silent.',
+    world: 'mars',
+    artifactId: 'opportunity',
+    sourceId: 'src-opportunity-end',
+  },
+  {
+    year: 2021,
+    date: '18 February 2021',
+    title: 'Perseverance lands on Mars',
+    text: 'It collects rock samples that could one day be brought back to Earth.',
+    world: 'mars',
+    sourceId: 'src-perseverance',
+  },
+  {
+    year: 2022,
+    date: '16 November 2022',
+    title: 'Artemis I launches',
+    text: 'An uncrewed test flight around the Moon, preparing for astronauts to return.',
+    world: 'moon',
+    sourceId: 'src-artemis1',
+  },
+];
+
+/** "Legacy of Discovery": how one mission paved the way for the next. */
+export const legacy: LegacyLink[] = [
+  {
+    from: 'Sojourner (1997)',
+    to: 'Spirit & Opportunity (2004)',
+    text: 'Sojourner proved a rover could drive on Mars, leading to bigger, longer-range rovers.',
+    sourceId: 'src-pathfinder',
+  },
+  {
+    from: 'Spirit & Opportunity (2004)',
+    to: 'Curiosity (2012)',
+    text: 'The twins found evidence of past water. Curiosity was sent to study whether ancient Mars could have supported life.',
+    sourceId: 'src-curiosity',
+  },
+  {
+    from: 'Curiosity (2012)',
+    to: 'Perseverance (2021)',
+    text: 'Perseverance uses a design based on Curiosity and now searches for signs of ancient life.',
+    sourceId: 'src-perseverance',
+  },
+  {
+    from: 'Phoenix (2008)',
+    to: 'Future Mars explorers',
+    text: 'Phoenix confirmed water ice just under the soil, a resource future explorers may use.',
+    sourceId: 'src-phoenix',
+  },
+  {
+    from: 'Pioneer 10 (1972)',
+    to: 'Voyager 1 & 2 (1977)',
+    text: 'Pioneer showed the asteroid belt and Jupiter could be crossed safely. The Voyagers followed.',
+    sourceId: 'src-voyager',
+  },
+  {
+    from: 'Apollo 11 (1969)',
+    to: 'Artemis (2022 →)',
+    text: 'Apollo proved humans could land on the Moon. Artemis aims to return astronauts there.',
+    sourceId: 'src-artemis1',
+  },
+];

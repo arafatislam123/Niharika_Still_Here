@@ -1,182 +1,113 @@
-# STILL HERE
+# Forgotten Explorers
 
-**Letters from the machines we left behind.**
+**Their missions ended. Their stories live on.**
 
-STILL HERE is a mobile-first, interactive web story for learners aged 8–16. Six machines that humanity left on the Moon, on Mars, and in deep space each write a letter to a young explorer. Each letter sits beside a fact box built only from cited NASA sources, and a zoomable map of real NASA imagery shows where each machine is now.
+🌐 **Live site: https://arafatislam123.github.io/Niharika_Still_Here/**
 
-The core idea: **"abandoned" is the wrong word.** Every machine is labeled as one of:
+An interactive space museum for learners aged 8–16 about NASA's retired, silent and left-behind
+exploration hardware. Kids spin a 3D solar system, visit the Moon, Mars and deep space, read or
+listen to each explorer's story, ask it questions, and play a Mars rover game. Every fact links
+to a NASA source.
 
-| Status      | Label                | Meaning                                       |
-| ----------- | -------------------- | --------------------------------------------- |
-| `active`    | Still working        | Still producing science or being used         |
-| `traveling` | Still traveling      | Still moving through space and returning data |
-| `silent`    | Silent on the surface| Contact ended; hardware remains in place      |
-| `historic`  | Historic site        | Left intentionally; now a heritage artifact   |
+> Built for the **2026 NASA Space Apps Challenge**: *Abandoned but not Forgotten*.
+> Independent student project. **No NASA endorsement is implied.**
 
-> Built for the **2026 NASA Space Apps Challenge** (theme: *The Next Frontier*), challenge: *Abandoned but not Forgotten: Storytelling about NASA's Discarded Equipment on the Moon and Mars*.
->
-> This is an independent student/community project. **No NASA endorsement is implied.**
+## Features (v0.2, first version)
 
-**Status:** Pre-hackathon baseline (spec v1.0). Content and assets are being prepared; code is written during the event.
+| Feature | What it does | Where |
+| --- | --- | --- |
+| **3D Solar System** | Three.js scene; click the Moon, Mars or Pioneer 10. Labels are real buttons (keyboard friendly). | `/`, `/explore` |
+| **Mission Memory Map** | Moon / Mars globe with pins at real landing coordinates; deep-space distance ruler. | `/explore/:world` |
+| **Story Engine** | Four chapters per explorer, in 3 modes: **Read**, **Listen** (browser speech), **Explore Facts** (sourced facts + live NASA photos). | `/artifacts/:id` |
+| **The Last Signal** | Step-by-step timeline of each mission's final days. | `/artifacts/:id` |
+| **Mission clock** | Planned vs actual lifetime (e.g. Opportunity: 90 sols → ~5,111). | `/artifacts/:id` |
+| **AI Explorer** | “If This Rover Could Talk”: answers only from verified facts, with source links; says “I don’t know” instead of guessing. | `/ask` |
+| **Mission Game** | 3 missions: Explore Mars, Find the Water Evidence, Save the Mission (dust storm + solar power). | `/game` |
+| **Timeline + Legacy** | 1962–2022 missions and how each led to the next. | `/timeline` |
+| **Quiz & badges** | 2 quizzes, 8 badges, progress saved in the browser (no accounts). | `/learn` |
+| **Sources** | Every NASA source and the fact-check status. | `/sources` |
 
----
+### The six explorers
 
-## The cast
+| Explorer | World | Status |
+| --- | --- | --- |
+| Apollo 11 Lunar Module descent stage | Moon | Mission Completed |
+| Opportunity | Mars | Lost Contact |
+| Spirit | Mars | Lost Contact |
+| Phoenix | Mars | Mission Completed |
+| Sojourner | Mars | Lost Contact |
+| Pioneer 10 | Deep space | Lost Contact |
 
-| # | Machine                                  | World      | Status      | Why it's "still here"                                  |
-| - | ---------------------------------------- | ---------- | ----------- | ------------------------------------------------------ |
-| 1 | Apollo Lunar Roving Vehicle (Apollo 15)  | Moon       | `historic`  | Carried astronauts farther than walking allowed        |
-| 2 | Apollo laser retroreflectors             | Moon       | `active`    | Still used to measure the Earth–Moon distance          |
-| 3 | Spirit                                   | Mars       | `silent`    | Planned for 90 sols; its stuck wheel found silica-rich soil |
-| 4 | Opportunity                              | Mars       | `silent`    | Planned for 90 sols; ran for about 14 years            |
-| 5 | Ingenuity                                | Mars       | `silent`    | Planned for 5 flights; flew 72                         |
-| 6 | Voyager 1                                | Deep space | `traveling` | First human-made object in interstellar space          |
+Statuses use six values (`active`, `inactive`, `mission-completed`, `lost-contact`,
+`partially-operational`, `unknown`) because a mission ending, losing contact and hardware
+breaking are different things.
 
-Every claim above must be verified against NASA sources before it ships (see the Fact Register in `docs/`).
+## NASA data used
 
-Each machine's story follows five beats: **Built → Journey → Discovery → Last signal → Still here**, with a *Quick read* (grade 3–5) and *Go deeper* (grade 6–8) version of each.
+- **NASA Image and Video Library API** (`images-api.nasa.gov`): live photos on every story page.
+  Public, no API key needed.
+- **Curated knowledge base** (`src/data/`): facts written from NASA Science, NASA JPL, NASA.gov
+  and the NSSDC catalog, each with its source URL and a `verified` / `needs-review` flag.
+  NASA has no single live API for historical hardware, so we curate the facts ourselves and add
+  media from the API.
 
-## Features
+## Run it
 
-- **Ghost Map**: Moon / Mars / Deep space switcher; zoomable NASA Trek imagery with real-coordinate markers, a local fallback basemap, and a keyboard-friendly list view.
-- **Machine pages**: five-beat scrolling story, a clearly labeled *Imagined letter*, and a fact box where every fact links to its source.
-- **Mission Clock**: guess the machine's real lifetime with a slider, then reveal expected vs actual ("It lasted about N times longer than planned").
-- **Look closer**: lazy-loaded 3D model with hotspots via `<model-viewer>`, plus an AR button on supported devices.
-- **Narration**: optional audio for each letter with WebVTT captions and a visible transcript. Never autoplays.
-- **Finale**: Apollo → Mars rovers → Artemis timeline, and the question *"What should we protect, and what will we leave behind next?"*
-- **Teacher sheets**: one printable PDF per machine plus a combined teacher pack.
-- **Sources & Data / About pages**: every dataset, image, and model with credit and license.
+```bash
+npm install
+npm run dev        # http://localhost:5173
+npm test           # content-integrity + AI retriever + API parser tests
+npm run build      # typecheck + production build into dist/
+```
 
-## Tech stack
+Node 20+. No backend: it is a static site.
 
-| Layer      | Choice                                                    |
-| ---------- | --------------------------------------------------------- |
-| Framework  | React + TypeScript on Vite                                |
-| Routing    | React Router                                              |
-| Styling    | Tailwind CSS (or CSS Modules) + design tokens             |
-| Map        | Leaflet / react-leaflet with NASA Trek WMTS tiles; `CRS.Simple` fallback |
-| 3D / AR    | `@google/model-viewer`                                    |
-| Animation  | CSS + light Framer Motion                                 |
-| Audio      | Native `<audio>` + WebVTT                                 |
-| Validation | Zod (or JSON Schema) at build time                        |
-| Offline    | `vite-plugin-pwa` (Workbox)                               |
-| Hosting    | Vercel / Netlify / GitHub Pages (static, HTTPS)           |
-| Quality    | ESLint, Prettier, Lighthouse CI, axe                      |
-
-Fully static: no backend, no accounts, no cookies, no trackers, no API keys.
+**Deployment:** every push to `main` builds and publishes to GitHub Pages
+(`.github/workflows/deploy-pages.yml`). One-time setup: repo **Settings → Pages → Source:
+GitHub Actions**. A Netlify config (`netlify.toml`) is also included as an alternative.
 
 ## Project structure
 
 ```
-still-here/
-├─ src/
-│  ├─ app/          routes: Landing, Map, Machine, Finale, Sources, About
-│  ├─ components/   StatusBadge, BeatSection, Letter, FactBox, MissionClock,
-│  │                GhostMap, ModelViewerPanel, AudioPlayer, ReadingToggle, SiteCloseup
-│  ├─ content/      machines/*.json, sites.json, sources.json, strings.en.json, assets.json
-│  ├─ lib/          schema.ts, loadContent.ts, i18n.ts, a11y.ts
-│  └─ styles/       tokens.css, global.css
-├─ public/          models/ images/ audio/ captions/ teacher/
-├─ scripts/         validate-content.ts, optimize-assets.ts
-├─ docs/            spec, fact register, QA checklist
-└─ vite.config.ts
+src/
+├─ data/         artifacts.ts (6 explorers, facts, stories, last signals), sources.ts,
+│                worlds.ts (worlds, timeline, legacy), quizzes.ts, types.ts
+├─ three/        SolarSystem.tsx, PlanetGlobe.tsx, textures.ts (procedural, no image files)
+├─ games/        RoverGame.tsx, missions.ts
+├─ lib/          explorerAI.ts (grounded retriever), nasaImages.ts (NASA API client),
+│                narration.ts (speech), progress.ts (badges, localStorage)
+├─ components/   Layout, NasaGallery, shared UI (StatusBadge, SourceLink, FactCard…)
+└─ pages/        Home, Explore, WorldPage, Artifacts, ArtifactPage, AskExplorer,
+                 GamePage, Timeline, Learn, Sources
 ```
 
-Routes: `/`, `/map`, `/machine/:id`, `/finale`, `/sources`, `/about`. The host needs an SPA fallback so deep links work.
+`src/data/types.ts` mirrors the planned database tables (planets, missions, artifacts, stories,
+media, scientific_discoveries, quizzes, questions), so the content can move into a backend later
+without changing shape.
 
-## Getting started
+## The AI Explorer and the planned backend
 
-Requires Node.js 18+.
+v1 runs fully in the browser. `askExplorer()` in `src/lib/explorerAI.ts` scores the verified
+facts against the question and returns the best ones **word for word** with their sources. It
+never generates new claims.
 
-```bash
-npm install
-npm run dev        # local dev server
-npm run validate   # content schema + source checks
-npm run build      # production build (runs validation)
-npm run preview    # serve the built site locally
-```
+To plug in the planned **Python FastAPI + RAG + LLM** service, set `VITE_AI_API_URL`. The app
+then calls `POST {VITE_AI_API_URL}/ai/ask` with `{ artifact_id, question }` and expects the
+`ExplorerAnswer` shape back. The local retriever stays as the offline fallback. Add the service
+origin to `connect-src` in `netlify.toml`.
 
-## Content model
+Next steps from the roadmap: Laravel/PostgreSQL API for content, pgvector retrieval, user
+accounts for badges across devices, more artifacts (e.g. Viking landers, Apollo LRVs).
 
-Each machine is one JSON file in `src/content/machines/<id>.json`. **Adding a machine needs only a new JSON file plus its assets; no code changes.**
+## Accuracy rules
 
-```json
-{
-  "id": "ingenuity",
-  "name": "Ingenuity",
-  "world": "mars",
-  "years": "2021–2024",
-  "status": "silent",
-  "hook": "Built for 5 flights. Flew 72.",
-  "coords": { "lat": 0.0, "lng": 0.0, "crs": "mars", "sourceId": "src-ingenuity-site" },
-  "clock": { "unit": "flights", "expected": 5, "actual": 72, "sourceId": "src-ingenuity-flights" },
-  "beats": [{ "key": "built", "title": "...", "quick": "...", "deep": "..." }],
-  "letter": { "quick": "...", "deep": "...", "audio": "audio/ingenuity.mp3", "captions": "captions/ingenuity.vtt" },
-  "facts": [{ "id": "f1", "text": "...", "sourceId": "src-ingenuity-flights" }],
-  "model": { "glb": "models/ingenuity.glb", "poster": "images/ingenuity-poster.webp", "hotspots": [] },
-  "images": [{ "src": "images/ingenuity-site.webp", "alt": "...", "credit": "...", "sourceId": "..." }],
-  "teacherSheet": "teacher/ingenuity.pdf"
-}
-```
+1. Every fact has a NASA `sourceId`. CI fails if one is missing (`src/data/content.test.ts`).
+2. Facts start as `needs-review` and show a “being double-checked” label until a second team
+   member confirms them. See [docs/FACT_CHECK.md](docs/FACT_CHECK.md).
+3. First-person stories are labelled **imagined voice**. The game is labelled a **simplified
+   simulation**. 3D surfaces are labelled **artistic, not to scale**.
 
-Sources live in `src/content/sources.json`:
+## Team workflow
 
-```json
-{ "id": "src-ingenuity-flights", "title": "...", "publisher": "NASA/JPL",
-  "url": "https://...", "retrieved": "2026-11-xx", "license": "NASA media usage guidelines" }
-```
-
-### The build fails if
-
-1. Any `sourceId` (fact, clock, coords, image) is missing from `sources.json`.
-2. Any image lacks `alt` or `credit`.
-3. Any machine is missing one of the 5 beats, or a beat lacks `quick` or `deep` text.
-4. `status` is not one of `active`, `silent`, `historic`, `traveling`.
-5. An asset exceeds its size limit (GLB ≤ 5 MB, hero image ≤ 300 KB, narration mp3 ≤ 1 MB).
-
-## Content rules
-
-- Letters are always labeled **"Imagined letter"** and visually separated from the fact box.
-- First person, warm, curious, no melodrama. No invented emotions, "last words", or fake quotes.
-- Every number or event in a letter must also appear in the fact box with a source.
-- Quick letters are 80–140 words; deep letters are up to 220.
-- **Two-person fact check:** one writer adds each fact with a link; a second person opens the link and confirms it. Nothing ships with an unticked item in the Fact Register.
-
-## Quality targets
-
-- WCAG 2.1 AA; full keyboard operation including the map; status never shown by color alone; `prefers-reduced-motion` respected.
-- Initial JS/CSS/HTML ≤ 250 KB gzipped; LCP ≤ 2.5 s on throttled 4G.
-- Lighthouse mobile: performance ≥ 85, accessibility ≥ 95.
-- Map, 3D viewer, and audio are lazy-loaded.
-- Demo path works offline (service worker precache, local basemaps).
-- Zero uncaught console errors.
-- Supported: iOS Safari 15+, Android Chrome, desktop Chrome / Firefox / Edge / Safari.
-
-## Data sources
-
-| Asset                         | Source                          |
-| ----------------------------- | ------------------------------- |
-| Apollo site orbital imagery   | LRO / LROC                      |
-| Mars rover/lander imagery     | MRO / HiRISE                    |
-| Basemaps and tiles            | NASA Moon Trek / Mars Trek      |
-| 3D models                     | NASA 3D Resources               |
-| Mission facts and dates       | NASA / JPL mission pages        |
-
-Every asset is recorded in `src/content/assets.json` with its source URL, credit line, license note, retrieval date, and where it's used. NASA logos are not used as project branding.
-
-## Team
-
-| Role                  | Owner | Responsibilities                                  |
-| --------------------- | ----- | ------------------------------------------------- |
-| Story & research lead | TBD   | Fact register, letters, beat copy, teacher sheets |
-| Frontend lead         | TBD   | Architecture, routing, map, machine page, performance |
-| Designer / illustrator| TBD   | Visual identity, icons, badges, poster images     |
-| Pitch & QA lead       | TBD   | Accessibility, testing, video, submission         |
-
-## Documentation
-
-The full Software Requirements Specification and Technical Specification (requirements, architecture, QA plan, timeline, and Fact Register) lives in `docs/`.
-
-## License
-
-Code: TBD. Images, models, and recordings belong to their credited sources (mostly NASA, used under NASA media usage guidelines); see the in-app Sources & Data page.
+Work on a feature branch and open a Pull Request into `main`. CI runs lint, typecheck, tests
+and build on every PR.
