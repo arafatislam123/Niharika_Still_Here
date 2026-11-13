@@ -46,7 +46,9 @@ try {
     fetchedAt: new Date().toISOString(),
   };
   fs.writeFileSync(OUT, `${JSON.stringify(snapshot, null, 2)}\n`);
-  console.log(`Pioneer 10: ${snapshot.distanceAu.toFixed(2)} AU from the Sun (${snapshot.epochLabel})`);
+  console.log(
+    `Pioneer 10: ${snapshot.distanceAu.toFixed(2)} AU from the Sun (${snapshot.epochLabel})`,
+  );
 } catch (error) {
   if (!fs.existsSync(OUT)) throw error;
   console.warn(`Horizons fetch failed (${error.message}); keeping the saved snapshot.`);

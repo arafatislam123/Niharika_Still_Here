@@ -1,6 +1,6 @@
 /**
  * Cinema mode: the explorer's story as a full-screen animated film. Each chapter plays its own
- * Three.js scene (src/cinema/scenes.ts) under subtitles, with optional narration. When
+ * Three.js scene (src/cinema/films.ts lists them) under subtitles, with optional narration. When
  * narration is on, a chapter waits for the voice to finish before moving on.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -11,31 +11,41 @@ import { narrationSupported, pickBestVoice, voicesReady } from '../lib/narration
 import { narrationUrl, RECORDED_NARRATION } from './available';
 import { buildSimpleRover, faceRoverForward, loadNasaModel } from '../three/marsScene';
 import { disposeTree, prefersReducedMotion } from '../three/textures';
-import { CINEMA, SCENE_BUILDERS, type CinemaScene, type SceneId } from './scenes';
+import { FILMS, type Caption } from './films';
+import type { CinemaScene } from './scenes';
 
 const MIN_SECONDS = 12;
 const MAX_SECONDS = 24;
 const chapterSeconds = (text: string) =>
   Math.min(MAX_SECONDS, Math.max(MIN_SECONDS, text.length * 0.065));
 
-/** Small caption shown on top of each scene (dates, counters), by scene and progress. */
-function useSceneCaption() {
-  const { t, n } = useLang();
-  return (scene: SceneId, p: number): string | null => {
-    switch (scene) {
-      case 'launch-landing':
-        return p < 0.3 ? t('cinema.opp.launch') : t('cinema.opp.landing');
-      case 'discoveries':
-        return p > 0.2 ? t('cinema.opp.berries') : null;
-      case 'long-drive': {
-        const year = Math.min(2018, 2004 + Math.floor(p * 15));
-        const km = p >= 0.995 ? n(45.16, 2) : n(p * 45.16, 1);
-        return `${t('cinema.opp.year', { year: n(year).replace(/,/g, '') })} · ${t('cinema.opp.km', { km })}`;
-      }
-      case 'dust-storm':
-        return p < 0.82 ? t('cinema.opp.storm') : t('cinema.opp.last');
+/** The caption for chapter progress p: the last caption whose `at` has been reached. */
+function useCaption() {
+  const { t, n, lang } = useLang();
+  return (captions: Caption[], p: number): string | null => {
+    const current = [...captions].reverse().find((c) => p >= c.at);
+    if (!current) return null;
+    if ('special' in current) {
+      // Opportunity's long drive: years and kilometres counting up to the real totals.
+      const year = Math.min(2018, 2004 + Math.floor(p * 15));
+      const km = p >= 0.995 ? n(45.16, 2) : n(p * 45.16, 1);
+      return `${t('cinema.opp.year', { year: n(year).replace(/,/g, '') })} · ${t('cinema.opp.km', { km })}`;
     }
+    return lang === 'bn' ? current.bn : current.en;
   };
+}
+
+/** Stand-in Pioneer 10 if the NASA model cannot load: a dish antenna on a small body. */
+function buildSimplePioneer(): THREE.Object3D {
+  const g = new THREE.Group();
+  const mat = new THREE.MeshStandardMaterial({ color: 0xdfe3ea, metalness: 0.6, roughness: 0.3 });
+  const dish = new THREE.Mesh(new THREE.ConeGeometry(1.4, 0.5, 32, 1, true), mat);
+  dish.rotation.x = -Math.PI / 2;
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.4, 6), mat);
+  body.position.z = -0.4;
+  body.rotation.x = Math.PI / 2;
+  g.add(dish, body);
+  return g;
 }
 
 export default function CinemaMode({
@@ -46,9 +56,9 @@ export default function CinemaMode({
   onClose: () => void;
 }) {
   const { t, lang } = useLang();
-  const config = CINEMA[artifact.id];
+  const config = FILMS[artifact.id];
   const chapters = artifact.chapters;
-  const caption = useSceneCaption();
+  const caption = useCaption();
 
   const rootRef = useRef<HTMLDivElement>(null);
   const mountRef = useRef<HTMLDivElement>(null);
@@ -188,48 +198,56 @@ export default function CinemaMode({
     observer.observe(mount);
     resize();
 
-    loadNasaModel(config.model, 2.6)
-      .then((model) => faceRoverForward(model.clone()))
-      .catch(() => buildSimpleRover())
-      .then((rover) => {
-        if (disposed) return;
-        for (const id of config.scenes) scenes.push(SCENE_BUILDERS[id]({ rover }));
-        setLoading(false);
+    // Load only the NASA models this film uses; fall back to simple stand-ins on failure.
+    const needs = (m: 'rover' | 'pioneer') => config.models.includes(m);
+    Promise.all([
+      needs('rover')
+        ? loadNasaModel('models/mars-exploration-rover.glb', 2.6)
+            .then((model) => faceRoverForward(model.clone()))
+            .catch(() => buildSimpleRover())
+        : Promise.resolve(buildSimpleRover()),
+      needs('pioneer')
+        ? loadNasaModel('models/pioneer-10.glb', 3.2).catch(() => buildSimplePioneer())
+        : Promise.resolve(buildSimplePioneer()),
+    ]).then(([rover, pioneer]) => {
+      if (disposed) return;
+      for (const chapter of config.chapters) scenes.push(chapter.build({ rover, pioneer }));
+      setLoading(false);
 
-        const timer = new THREE.Timer();
-        let uiTick = 0;
-        let held = 0;
-        const loop = (ts: number) => {
-          frame = requestAnimationFrame(loop);
-          timer.update(ts);
-          const dt = Math.min(timer.getDelta(), 0.05);
-          const c = ctl.current;
-          const duration = chapterSeconds(chapters[c.chapter].text);
+      const timer = new THREE.Timer();
+      let uiTick = 0;
+      let held = 0;
+      const loop = (ts: number) => {
+        frame = requestAnimationFrame(loop);
+        timer.update(ts);
+        const dt = Math.min(timer.getDelta(), 0.05);
+        const c = ctl.current;
+        const duration = chapterSeconds(chapters[c.chapter].text);
 
-          if (c.playing && !c.ended) {
-            c.elapsed += dt;
-            if (c.elapsed >= duration) {
-              // With narration on, wait for the voice to finish (up to 30 extra seconds).
-              held += dt;
-              if (!(c.sound && c.speaking) || held > 30) {
-                held = 0;
-                goTo(c.chapter + 1);
-              }
+        if (c.playing && !c.ended) {
+          c.elapsed += dt;
+          if (c.elapsed >= duration) {
+            // With narration on, wait for the voice to finish (up to 30 extra seconds).
+            held += dt;
+            if (!(c.sound && c.speaking) || held > 30) {
+              held = 0;
+              goTo(c.chapter + 1);
             }
           }
-          const p = Math.min(1, c.elapsed / duration);
-          const scene = scenes[c.chapter];
-          scene.update(reduced ? 0.85 : p, camera, timer.getElapsed());
-          renderer.render(scene.scene, camera);
+        }
+        const p = Math.min(1, c.elapsed / duration);
+        const scene = scenes[c.chapter];
+        scene.update(reduced ? 0.85 : p, camera, timer.getElapsed());
+        renderer.render(scene.scene, camera);
 
-          uiTick += dt;
-          if (uiTick > 0.1) {
-            uiTick = 0;
-            setProgress(p);
-          }
-        };
-        frame = requestAnimationFrame(loop);
-      });
+        uiTick += dt;
+        if (uiTick > 0.1) {
+          uiTick = 0;
+          setProgress(p);
+        }
+      };
+      frame = requestAnimationFrame(loop);
+    });
 
     return () => {
       disposed = true;
@@ -278,8 +296,8 @@ export default function CinemaMode({
 
   if (!config) return null;
   const c = chapters[chapter];
-  const sceneId = config.scenes[chapter];
-  const cap = !loading && !ended ? caption(sceneId, progress) : null;
+  const cap =
+    !loading && !ended ? caption(config.chapters[chapter]?.captions ?? [], progress) : null;
 
   return (
     <div

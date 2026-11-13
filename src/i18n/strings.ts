@@ -408,13 +408,8 @@ export const en = {
     '🔊 Voice: your device’s text-to-speech. Tip: Microsoft Edge has the most natural voices.',
   'cinema.voiceNone':
     'This device has no Bengali voice. Open the site in Microsoft Edge or Chrome on Android to hear it.',
-  'cinema.opp.launch': 'Launch · July 2003',
-  'cinema.opp.landing': 'Landing · January 2004 · Meridiani Planum',
-  'cinema.opp.berries': 'Hematite “blueberries”: clues of ancient water',
   'cinema.opp.year': 'Year {year}',
   'cinema.opp.km': '{km} km driven',
-  'cinema.opp.storm': 'June 2018 · a planet-wide dust storm',
-  'cinema.opp.last': '10 June 2018 · last signal',
 
   // gallery & errors
   'gallery.loading': 'Loading NASA images',
@@ -814,13 +809,8 @@ export const bn: Record<StringKey, string> = {
     '🔊 কণ্ঠ: তোমার ডিভাইসের স্বয়ংক্রিয় কণ্ঠ। পরামর্শ: Microsoft Edge-এ সবচেয়ে স্বাভাবিক কণ্ঠ পাওয়া যায়।',
   'cinema.voiceNone':
     'এই ডিভাইসে বাংলা কণ্ঠ নেই। শুনতে চাইলে Microsoft Edge বা Android-এর Chrome-এ সাইটটি খোলো।',
-  'cinema.opp.launch': 'উৎক্ষেপণ · জুলাই ২০০৩',
-  'cinema.opp.landing': 'অবতরণ · জানুয়ারি ২০০৪ · মেরিডিয়ানি প্ল্যানাম',
-  'cinema.opp.berries': 'হেমাটাইটের “ব্লুবেরি”: প্রাচীন পানির সূত্র',
   'cinema.opp.year': '{year} সাল',
   'cinema.opp.km': '{km} কিমি পথ চলা',
-  'cinema.opp.storm': 'জুন ২০১৮ · গ্রহজোড়া ধুলিঝড়',
-  'cinema.opp.last': '১০ জুন ২০১৮ · শেষ সংকেত',
 
   'gallery.loading': 'নাসার ছবি লোড হচ্ছে',
   'gallery.error': 'এই মুহূর্তে নাসা ইমেজ লাইব্রেরির সাথে যোগাযোগ করা যাচ্ছে না।',

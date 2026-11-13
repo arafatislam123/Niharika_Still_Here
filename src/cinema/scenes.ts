@@ -7,7 +7,8 @@
  * drive, the 2018 dust storm), but shapes, colours and timings are simplified.
  */
 import * as THREE from 'three';
-import { buildMarsTerrain, marsHeight } from '../three/marsScene';
+import { buildMarsTerrain, buildSimpleRover, marsHeight } from '../three/marsScene';
+import { buildPathfinder } from './props';
 import { makeGlowTexture, makePlanetTexture, makeStarfield } from '../three/textures';
 
 export interface CinemaScene {
@@ -17,24 +18,26 @@ export interface CinemaScene {
 }
 
 export interface SceneContext {
-  /** A ready-to-clone rover (the NASA model when it loaded, otherwise a simple stand-in). */
+  /** A ready-to-clone Mars Exploration Rover (NASA model, or a simple stand-in). */
   rover: THREE.Object3D;
+  /** A ready-to-clone Pioneer 10 (NASA model, or a simple stand-in). */
+  pioneer: THREE.Object3D;
 }
 
 // ---------------------------------------------------------------------------------------------
 // helpers
 // ---------------------------------------------------------------------------------------------
 
-const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
+export const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 /** Progress of t inside the window [a, b], clamped to 0..1. */
-const seg = (t: number, a: number, b: number) => clamp01((t - a) / (b - a));
-const easeInOut = (x: number) => x * x * (3 - 2 * x);
-const easeIn = (x: number) => x * x * x;
-const lerp = THREE.MathUtils.lerp;
+export const seg = (t: number, a: number, b: number) => clamp01((t - a) / (b - a));
+export const easeInOut = (x: number) => x * x * (3 - 2 * x);
+export const easeIn = (x: number) => x * x * x;
+export const lerp = THREE.MathUtils.lerp;
 
-const MARS_SKY = new THREE.Color(0xd9a27a);
+export const MARS_SKY = new THREE.Color(0xd9a27a);
 
-function marsLights(scene: THREE.Scene) {
+export function marsLights(scene: THREE.Scene) {
   const ambient = new THREE.AmbientLight(0xffe6d0, 0.75);
   const sun = new THREE.DirectionalLight(0xffffff, 1.7);
   sun.position.set(30, 50, 20);
@@ -43,7 +46,7 @@ function marsLights(scene: THREE.Scene) {
 }
 
 /** A small bowl-shaped crater at the origin, on top of gentle hills. */
-const craterHeight =
+export const craterHeight =
   (radius: number, depth: number, hills = 0.35) =>
   (x: number, z: number) => {
     const r = Math.hypot(x, z);
@@ -52,7 +55,7 @@ const craterHeight =
     return marsHeight(x, z) * hills + bowl + rim;
   };
 
-function scatterRocks(
+export function scatterRocks(
   scene: THREE.Object3D,
   height: (x: number, z: number) => number,
   count: number,
@@ -76,7 +79,10 @@ function scatterRocks(
 // 1. The Beginning: launch from Earth, then parachute + airbag landing into a small crater
 // ---------------------------------------------------------------------------------------------
 
-export function launchAndLanding(ctx: SceneContext): CinemaScene {
+export function launchAndLanding(
+  ctx: SceneContext,
+  payload: 'rover' | 'pathfinder' = 'rover',
+): CinemaScene {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x000000);
 
@@ -140,7 +146,15 @@ export function launchAndLanding(ctx: SceneContext): CinemaScene {
   lights.add(amb, sun);
   landing.add(lights);
 
-  const rover = ctx.rover.clone();
+  // What the airbags protect: a Mars Exploration Rover, or the Pathfinder lander carrying the
+  // small Sojourner rover, which opens its petals and drives down a ramp.
+  const rover = payload === 'rover' ? ctx.rover.clone() : new THREE.Group();
+  const pathfinder = payload === 'pathfinder' ? buildPathfinder() : null;
+  const sojourner = payload === 'pathfinder' ? buildSimpleRover() : null;
+  if (pathfinder && sojourner) {
+    sojourner.scale.setScalar(0.32);
+    rover.add(pathfinder.group, sojourner);
+  }
   landing.add(rover);
 
   const airbags = new THREE.Group();
@@ -248,6 +262,12 @@ export function launchAndLanding(ctx: SceneContext): CinemaScene {
       rover.position.set(0, height(0, 0), 0);
       rover.scale.setScalar(easeInOut(seg(deflate, 0.3, 1)));
       rover.rotation.y = Math.PI / 2; // facing along the bounce direction (+x)
+      if (pathfinder && sojourner) {
+        const open = easeInOut(seg(u, 0.88, 0.94));
+        pathfinder.petals.forEach((p) => (p.rotation.x = (1 - open) * -1.15));
+        const drive = easeInOut(seg(u, 0.94, 1));
+        sojourner.position.set(0, 0.15 + Math.max(0, 0.25 - drive * 0.4), 0.3 + drive * 2.2);
+      }
 
       // camera: follow the fall, then the bounces, then circle the rover
       if (u < 0.22) {
@@ -509,20 +529,3 @@ export function dustStormSilence(ctx: SceneContext): CinemaScene {
     },
   };
 }
-
-export const SCENE_BUILDERS = {
-  'launch-landing': launchAndLanding,
-  discoveries,
-  'long-drive': longDrive,
-  'dust-storm': dustStormSilence,
-} as const;
-
-export type SceneId = keyof typeof SCENE_BUILDERS;
-
-/** Which scene plays for each chapter. Other explorers can be added later. */
-export const CINEMA: Record<string, { model: string; scenes: SceneId[] }> = {
-  opportunity: {
-    model: 'models/mars-exploration-rover.glb',
-    scenes: ['launch-landing', 'discoveries', 'long-drive', 'dust-storm'],
-  },
-};

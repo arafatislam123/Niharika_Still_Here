@@ -31,7 +31,7 @@ to a NASA source.
 | **Pioneer 10 live tracker** | Current distance, speed and light-time from NASA JPL Horizons, counting up every second. | `/explore/deep-space` |
 | **Hear history** | Real Apollo 11 audio (“The Eagle has landed”, “One small step”) with transcripts. | Apollo story |
 | **Then → Now → Next** | How each old mission connects to Artemis, Perseverance and Voyager. | home page |
-| **Cinema mode** | Opportunity’s story as a full-screen animated film: launch, parachute and airbag landing, “blueberries”, the long drive and the 2018 dust storm, with subtitles, narration and the real NASA rover model. | Opportunity story |
+| **Cinema mode** | Every explorer’s story as a full-screen animated film (4 scenes each): launches, airbag and rocket landings, the Moon walk and liftoff, Phoenix digging ice and seeing snow, Pioneer at Jupiter, and each mission’s last signal. Subtitles, narration (human recordings supported, see docs/RECORDING_GUIDE.md) and captions in English and Bengali. | every story page |
 | **Time slider** | Drag or “play” through 1962 → today on the timeline. | `/timeline` |
 
 ### The six explorers

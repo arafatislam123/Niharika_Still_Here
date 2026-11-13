@@ -20,6 +20,46 @@ language to `RECORDED_NARRATION` in `src/cinema/available.ts`.
 
 ---
 
+# Apollo 11 Lunar Module Descent Stage (`apollo-11-descent-stage`)
+
+## বাংলা
+
+### `public/audio/narration/apollo-11-descent-stage/bn-1.mp3`
+
+**এক যানে দুই যন্ত্র।** আমি ছিলাম ঈগল নামের একটি মহাকাশযানের নিচের অর্ধেক। আমার উপরের অর্ধেক ছিল দুজন নভোচারীর জন্য ছোট্ট একটা কেবিন। আমার ছিল চারটি পা আর একটি বড় রকেট ইঞ্জিন। আমার কাজ ছিল গতি কমিয়ে আমাদের আলতো করে চাঁদে নামানো।
+
+### `public/audio/narration/apollo-11-descent-stage/bn-2.mp3`
+
+**ঈগল নেমেছে!।** ২০ জুলাই ১৯৬৯ তারিখে নিল আর্মস্ট্রং আর বাজ অলড্রিন আমাকে নিয়ে প্রশান্তি সাগর নামের এক সমতল প্রান্তরে নামলেন। তাঁরা আমার মই বেয়ে নেমে প্রথম মানুষ হিসেবে অন্য জগতে হাঁটলেন। তাঁরা পাথর সংগ্রহ করলেন আর আমার পায়ের কাছে কিছু পরীক্ষা বসালেন।
+
+### `public/audio/narration/apollo-11-descent-stage/bn-3.mp3`
+
+**আমি হলাম লঞ্চ প্যাড।** বাড়ি ফেরার সময় আমার উপরের অর্ধেক নিজের ইঞ্জিন চালু করে আমার উপর থেকেই উড়ে গেল। আমি থেকে গেলাম। পরিকল্পনা সবসময় এটাই ছিল: আমাকে রেখে গেলে নভোচারীদের আমার ভারী পা আর ইঞ্জিন আবার মহাকাশে বয়ে নিতে হতো না।
+
+### `public/audio/narration/apollo-11-descent-stage/bn-4.mp3`
+
+**আমি এখনো আছি।** আমি এখনো ট্রাংকুইলিটি বেসে দাঁড়িয়ে আছি। আমার পায়ে লাগানো একটি ফলকে যে কেউ এলে পড়ার মতো একটি বার্তা লেখা আছে। আর নভোচারীদের রেখে যাওয়া একটি আয়না আজও পৃথিবীর বিজ্ঞানীরা ব্যবহার করেন।
+
+## English
+
+### `public/audio/narration/apollo-11-descent-stage/en-1.mp3`
+
+**Two Machines in One.** I was the bottom half of a spacecraft called Eagle. My top half was a small cabin for two astronauts. I had four landing legs and a big rocket engine, and my job was to slow us down and set us gently on the Moon.
+
+### `public/audio/narration/apollo-11-descent-stage/en-2.mp3`
+
+**The Eagle Has Landed.** On 20 July 1969, Neil Armstrong and Buzz Aldrin rode me down to a flat plain called the Sea of Tranquility. They climbed down my ladder and became the first people to walk on another world. They collected rocks and set up experiments near my legs.
+
+### `public/audio/narration/apollo-11-descent-stage/en-3.mp3`
+
+**I Became a Launch Pad.** When it was time to go home, my top half fired its own engine and lifted off from on top of me. I stayed behind. That was always the plan: leaving me here meant the astronauts did not have to carry my heavy legs and engine back into space.
+
+### `public/audio/narration/apollo-11-descent-stage/en-4.mp3`
+
+**Still Here.** I am still standing at Tranquility Base. A plaque on my leg carries a message for anyone who visits. And a mirror the astronauts left nearby is still used by scientists on Earth today.
+
+---
+
 # Opportunity Rover (`opportunity`)
 
 ## বাংলা
@@ -57,3 +97,163 @@ language to `RECORDED_NARRATION` in `src/cinema/available.ts`.
 ### `public/audio/narration/opportunity/en-4.mp3`
 
 **The Silence.** A planet-wide dust storm covered the sky. My solar panels could no longer collect enough sunlight. On 10 June 2018, I stopped communicating with Earth. Engineers called to me more than a thousand times.
+
+---
+
+# Spirit Rover (`spirit`)
+
+## বাংলা
+
+### `public/audio/narration/spirit/bn-1.mp3`
+
+**যমজের প্রথমজন।** মঙ্গলে পৌঁছানো যমজ দুই রোভারের মধ্যে আমি প্রথম। আমি নেমেছিলাম গুসেভ ক্রেটারে, যা বিজ্ঞানীরা বেছে নিয়েছিলেন কারণ সেখানে হয়তো একসময় হ্রদ ছিল। আমার কাজ ছিল জানা, পানি এই জায়গাটা গড়েছিল কি না।
+
+### `public/audio/narration/spirit/bn-2.mp3`
+
+**পাহাড়ে চড়া।** আমার চারপাশের সমভূমি ছিল বেশিরভাগ আগ্নেয় পাথরের, তাই আমি দিগন্তের কিছু পাহাড়ের দিকে গিয়ে সেগুলোতে চড়লাম। ২০০৬ সালে আমার সামনের একটি চাকা ঘোরা বন্ধ করে দিল। তাই আমি পেছন দিকে চলা শিখলাম, চাকাটা টেনে টেনে।
+
+### `public/audio/narration/spirit/bn-3.mp3`
+
+**ভাগ্যের আঁচড়।** আমার আটকে যাওয়া চাকাটা মাটিতে একটা খাঁজ কেটে দিল, আর সেখানে উজ্জ্বল কিছু বেরিয়ে এলো: প্রায় খাঁটি সিলিকা। পৃথিবীতে এমন মাটি তৈরি হয় উষ্ণ প্রস্রবণ বা বাষ্প-ছিদ্রের কাছে, যেখানে ক্ষুদ্র জীব বাঁচতে পারে।
+
+### `public/audio/narration/spirit/bn-4.mp3`
+
+**বালিতে আটকা।** ২০০৯ সালে ট্রয় নামের এক জায়গায় আমার চাকা নরম মাটিতে বসে গেল। আমি আর বের হতে পারলাম না, তাই এক জায়গায় থেকে কাজ করা বিজ্ঞান-কেন্দ্র হয়ে গেলাম। শীত এলে আমার শক্তি কমে এলো, আর ২২ মার্চ ২০১০ তারিখে আমি শেষ বার্তা পাঠালাম।
+
+## English
+
+### `public/audio/narration/spirit/en-1.mp3`
+
+**First of the Twins.** I was the first of two twin rovers to reach Mars. I landed in Gusev crater, a place scientists picked because it might once have held a lake. My job was to find out if water had shaped this place.
+
+### `public/audio/narration/spirit/en-2.mp3`
+
+**Climbing Hills.** The plains around me were mostly volcanic rock, so I drove to some hills on the horizon and climbed them. In 2006 one of my front wheels stopped turning. So I learned to drive backwards, dragging it behind me.
+
+### `public/audio/narration/spirit/en-3.mp3`
+
+**A Lucky Scrape.** My stuck wheel scraped a trench in the soil, and it revealed something bright: almost pure silica. On Earth, soil like that forms near hot springs or steam vents, places where tiny life can live.
+
+### `public/audio/narration/spirit/en-4.mp3`
+
+**Stuck in the Sand.** In 2009 my wheels sank into soft soil at a place called Troy. I could not get out, so I became a science station that stayed in one spot. As winter came, my power faded, and on 22 March 2010 I sent my last message.
+
+---
+
+# Phoenix Mars Lander (`phoenix`)
+
+## বাংলা
+
+### `public/audio/narration/phoenix/bn-1.mp3`
+
+**পুরোনো অংশ থেকে জেগে ওঠা।** আমার নাম ফিনিক্স, সেই পাখির নামে যে আবার জেগে ওঠে। কারণ আমাকে বানানো হয়েছিল একটি বাতিল হওয়া ল্যান্ডারের অংশ দিয়ে। মে ২০০৮-এ আমি রকেট চালিয়ে মঙ্গলের উত্তর মেরুর কাছে বরফে ঢাকা প্রান্তরে আলতো করে নামলাম।
+
+### `public/audio/narration/phoenix/bn-2.mp3`
+
+**বরফের খোঁজে খোঁড়াখুঁড়ি।** আমি চলতে পারতাম না, কিন্তু আমার ছিল একটি লম্বা রোবটিক হাত আর একটি বেলচা। আমি ছোট ছোট খাঁজ খুঁড়লাম আর উজ্জ্বল সাদা টুকরো পেলাম। কয়েক দিন পর সেগুলো পাতলা বাতাসে মিলিয়ে গেল। ওগুলো ছিল পানির বরফ!
+
+### `public/audio/narration/phoenix/bn-3.mp3`
+
+**মাটি আর আকাশের চমক।** আমার যন্ত্রগুলো মাটি পরীক্ষা করে পারক্লোরেট নামের এক ধরনের লবণ খুঁজে পেল। আমি মেঘের দিকে লেজার তাক করে দেখলাম, মেঘ থেকে তুষার পড়ছে, যদিও মাটিতে পৌঁছানোর আগেই তা মিলিয়ে যাচ্ছিল।
+
+### `public/audio/narration/phoenix/bn-4.mp3`
+
+**দীর্ঘ শীত।** আমাকে বানানো হয়েছিল কেবল একটি মেরু-গ্রীষ্মের জন্য। শরৎ এলে সূর্য নিচে নামতে থাকল, আর আমার শক্তি কমে এলো। আমার শেষ সংকেত পৃথিবীতে পৌঁছায় ২ নভেম্বর ২০০৮ তারিখে। এরপরের শীতে বরফ আমাকে ঢেকে ফেলল।
+
+## English
+
+### `public/audio/narration/phoenix/en-1.mp3`
+
+**Rising from Old Parts.** I am named after the phoenix, the bird that rises again, because I was built using parts of a lander whose mission was cancelled. In May 2008 I fired my rockets and set down gently on the icy plains near the north pole of Mars.
+
+### `public/audio/narration/phoenix/en-2.mp3`
+
+**Digging for Ice.** I could not drive, but I had a long robotic arm with a scoop. I dug little trenches and found bright white chunks. A few days later they had vanished into the thin air. They were water ice!
+
+### `public/audio/narration/phoenix/en-3.mp3`
+
+**Surprises in the Soil and Sky.** My instruments tasted the soil and found a salt called perchlorate. I also pointed a laser at the clouds and saw snow falling from them, though it disappeared before it reached the ground.
+
+### `public/audio/narration/phoenix/en-4.mp3`
+
+**The Long Winter.** I was only built for one Arctic summer. As autumn came, the Sun sank lower and my power faded. My last signal reached Earth on 2 November 2008. Ice covered me during the winter that followed.
+
+---
+
+# Sojourner Rover (`sojourner`)
+
+## বাংলা
+
+### `public/audio/narration/sojourner/bn-1.mp3`
+
+**ছোট কিন্তু সাহসী।** আমি মোটামুটি একটা মাইক্রোওয়েভ ওভেনের সমান। ৪ জুলাই ১৯৯৭ তারিখে আমার ল্যান্ডার বিশাল এয়ারব্যাগের ভেতরে লাফিয়ে মঙ্গলে নামল। এর কিছু পরেই আমি একটা ঢালু পথ বেয়ে নেমে এলাম এবং প্রথম চাকাওয়ালা রোভার হিসেবে অন্য কোনো গ্রহ ঘুরে দেখলাম।
+
+### `public/audio/narration/sojourner/bn-2.mp3`
+
+**পাথরদের সাথে পরিচয়।** বিজ্ঞানীরা আমার চারপাশের পাথরগুলোর মজার নাম দিয়েছিলেন, যেমন বার্নাকল বিল আর ইয়োগি। আমি তাদের কাছে গিয়ে আমার যন্ত্র চেপে ধরে মেপে দেখতাম, তারা কী দিয়ে তৈরি।
+
+### `public/audio/narration/sojourner/bn-3.mp3`
+
+**এক শিক্ষার্থীর দেওয়া নাম।** আমার নাম বেছে নিয়েছিল ১২ বছরের এক শিক্ষার্থী, যে সোজার্নার ট্রুথকে নিয়ে একটি রচনা লিখেছিল। সোজার্নার ট্রুথ ছিলেন এমন একজন নারী, যিনি স্বাধীনতা ও সমান অধিকারের কথা বলতে দেশজুড়ে ঘুরেছিলেন।
+
+### `public/audio/narration/sojourner/bn-4.mp3`
+
+**উপত্যকায় নীরবতা।** আমার কাজ করার কথা ছিল মাত্র এক সপ্তাহ, কিন্তু আমি প্রায় তিন মাস চলেছি। আমি ল্যান্ডারের মাধ্যমে পৃথিবীর সাথে কথা বলতাম, তাই ২৭ সেপ্টেম্বর ১৯৯৭ তারিখে ল্যান্ডার নিশ্চুপ হলে আমিও চুপ হয়ে গেলাম। আমার চাকা আর সাসপেনশনের নকশা পরের রোভারগুলোতে আজও এগিয়ে চলেছে।
+
+## English
+
+### `public/audio/narration/sojourner/en-1.mp3`
+
+**Small but Brave.** I am about the size of a microwave oven. On 4 July 1997 my lander bounced onto Mars inside giant airbags. Soon after, I rolled down a ramp and became the first wheeled rover ever to explore another planet.
+
+### `public/audio/narration/sojourner/en-2.mp3`
+
+**Meeting the Rocks.** Scientists gave the rocks around me friendly names like Barnacle Bill and Yogi. I drove up to them, pressed my instrument against them, and measured what they were made of.
+
+### `public/audio/narration/sojourner/en-3.mp3`
+
+**A Name from a Student.** My name was chosen by a 12-year-old student who wrote an essay about Sojourner Truth, a woman who travelled to speak out for freedom and equal rights.
+
+### `public/audio/narration/sojourner/en-4.mp3`
+
+**Quiet in the Valley.** I was only expected to work for a week, but I kept going for almost three months. I talked to Earth through my lander, so when it went silent on 27 September 1997, I went quiet too. My wheels and suspension design rolled on in the rovers that came after me.
+
+---
+
+# Pioneer 10 (`pioneer-10`)
+
+## বাংলা
+
+### `public/audio/narration/pioneer-10/bn-1.mp3`
+
+**অজানার পথে।** মার্চ ১৯৭২-এ আমি পৃথিবী ছাড়লাম। সামনে ছিল গ্রহাণু বেষ্টনী। কেউ নিশ্চিত জানত না, কোনো মহাকাশযান নিরাপদে এর ভেতর দিয়ে যেতে পারবে কি না। আমিই প্রথম চেষ্টা করলাম, আর পেরেও গেলাম।
+
+### `public/audio/narration/pioneer-10/bn-2.mp3`
+
+**হ্যালো, বৃহস্পতি।** ডিসেম্বর ১৯৭৩-এ আমি সবচেয়ে বড় গ্রহ বৃহস্পতির পাশ দিয়ে উড়ে গেলাম। আমিই প্রথম মহাকাশযান যে সেখানে গিয়েছিল, আর এর ঘূর্ণি মেঘের প্রথম কাছ থেকে তোলা ছবি পাঠিয়েছিলাম।
+
+### `public/audio/narration/pioneer-10/bn-3.mp3`
+
+**সূর্য থেকে বহু দূরে।** এখানে সূর্যের আলো সোলার প্যানেলের জন্য খুবই দুর্বল। তাই তেজস্ক্রিয় পদার্থের তাপ দিয়ে আমি চলি। আমি একটি সোনালি ফলকও বয়ে নিয়ে যাচ্ছি, একটি ছবি-বার্তা, যা দেখায় কারা আমাকে পাঠিয়েছে আর পৃথিবী কোথায়।
+
+### `public/audio/narration/pioneer-10/bn-4.mp3`
+
+**ক্ষীণ বিদায়।** বছরের পর বছর আমার কণ্ঠ ক্ষীণ হতে থাকল। ২৩ জানুয়ারি ২০০৩ তারিখে প্রায় ১২ বিলিয়ন কিলোমিটার দূর থেকে পৃথিবী শেষবারের মতো আমার কথা শুনল। আমি এখনো উড়ে চলেছি, রোহিণী (অলডেবারান) নামের এক লাল তারার দিকে।
+
+## English
+
+### `public/audio/narration/pioneer-10/en-1.mp3`
+
+**Into the Unknown.** I left Earth in March 1972. Ahead of me lay the asteroid belt. Nobody knew for sure if a spacecraft could fly through it safely. I was the first to try, and I made it.
+
+### `public/audio/narration/pioneer-10/en-2.mp3`
+
+**Hello, Jupiter.** In December 1973 I flew past Jupiter, the biggest planet. I was the first spacecraft ever to visit it, and I sent home the first close-up pictures of its swirling clouds.
+
+### `public/audio/narration/pioneer-10/en-3.mp3`
+
+**Far from the Sun.** Out here, sunlight is too weak for solar panels. Instead, the heat of radioactive material powers me. I also carry a golden plaque, a picture-message showing who sent me and where Earth is.
+
+### `public/audio/narration/pioneer-10/en-4.mp3`
+
+**The Faint Goodbye.** Year after year, my voice grew fainter. On 23 January 2003, from about 12 billion kilometres away, Earth heard me for the last time. I am still flying, heading towards a red star called Aldebaran.

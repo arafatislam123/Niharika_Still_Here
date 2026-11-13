@@ -18,6 +18,8 @@ export function buildMarsTerrain(
   segments = 140,
   height: (x: number, z: number) => number = marsHeight,
   flat = true,
+  /** Base colour of the ground (Mars red by default; grey for the Moon). */
+  tint: [number, number, number] = [0.72, 0.33, 0.19],
 ): THREE.Mesh {
   const geo = new THREE.PlaneGeometry(size, size, segments, segments);
   geo.rotateX(-Math.PI / 2);
@@ -30,7 +32,7 @@ export function buildMarsTerrain(
     const y = height(x, z);
     pos.setY(i, y);
     const shade = 0.75 + (y + 4) * 0.05 + Math.sin(x * 1.7 + z * 1.3) * 0.03;
-    c.setRGB(0.72 * shade, 0.33 * shade, 0.19 * shade);
+    c.setRGB(tint[0] * shade, tint[1] * shade, tint[2] * shade);
     colors.set([c.r, c.g, c.b], i * 3);
   }
   geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));

@@ -1,5 +1,12 @@
 /** Explorers that have a cinema-mode film (kept tiny so pages can check without loading 3D code). */
-export const CINEMA_ARTIFACTS = new Set(['opportunity']);
+export const CINEMA_ARTIFACTS = new Set([
+  'apollo-11-descent-stage',
+  'opportunity',
+  'spirit',
+  'phoenix',
+  'sojourner',
+  'pioneer-10',
+]);
 
 /**
  * Human-recorded narration. List a language here once its files are in
