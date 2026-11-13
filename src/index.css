@@ -16,11 +16,11 @@
   --color-deep: 143 168 255;
   /* Bengali-capable fonts are listed so বাংলা text renders well on Windows, Android and Apple. */
   --font-ui:
-    ui-rounded, 'SF Pro Rounded', 'Nunito', 'Segoe UI', 'Noto Sans Bengali', 'Nirmala UI',
-    'Bangla Sangam MN', 'Kohinoor Bangla', system-ui, sans-serif;
+    'Baloo Da 2', ui-rounded, 'SF Pro Rounded', 'Nunito', 'Segoe UI', 'Noto Sans Bengali',
+    'Nirmala UI', 'Bangla Sangam MN', 'Kohinoor Bangla', system-ui, sans-serif;
   --font-display:
-    'Trebuchet MS', ui-rounded, 'Segoe UI', 'Noto Sans Bengali', 'Nirmala UI', 'Bangla Sangam MN',
-    system-ui, sans-serif;
+    'Baloo Da 2', 'Trebuchet MS', ui-rounded, 'Segoe UI', 'Noto Sans Bengali', 'Nirmala UI',
+    'Bangla Sangam MN', system-ui, sans-serif;
   color-scheme: dark;
 }
 
@@ -29,6 +29,7 @@ html {
 }
 
 body {
+  font-size: 1.0625rem;
   background: rgb(var(--color-bg));
   color: rgb(var(--color-text));
   font-family: var(--font-ui);
@@ -55,7 +56,7 @@ body {
 
 /* Bengali script needs a little more line height and no letter-spacing. */
 :lang(bn) body {
-  line-height: 1.7;
+  line-height: 1.75;
 }
 :lang(bn) .eyebrow {
   letter-spacing: 0.04em;
@@ -63,16 +64,16 @@ body {
 
 @layer components {
   .card {
-    @apply rounded-2xl border border-line bg-surface/90 p-5 shadow-lg shadow-black/30;
+    @apply rounded-3xl border border-line bg-surface/90 p-5 shadow-lg shadow-black/30;
   }
   .btn {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 py-2.5 font-semibold transition;
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-5 py-2.5 font-bold transition active:scale-95;
   }
   .btn-primary {
-    @apply btn bg-accent text-space hover:brightness-110;
+    @apply btn bg-accent text-space shadow-[0_5px_0_rgb(190_140_30)] hover:brightness-110 active:translate-y-1 active:shadow-none;
   }
   .btn-ghost {
-    @apply btn border border-line bg-raised text-ink hover:border-accent;
+    @apply btn border-2 border-line bg-raised text-ink hover:border-accent;
   }
   .chip {
     @apply inline-flex items-center gap-1 rounded-full border border-line bg-raised px-3 py-1 text-xs font-semibold;
@@ -80,9 +81,100 @@ body {
   .eyebrow {
     @apply text-xs font-bold uppercase tracking-[0.2em] text-accent;
   }
+  .btn-big {
+    @apply min-h-14 px-7 text-lg;
+  }
   .story-text {
     @apply text-lg leading-relaxed md:text-xl;
   }
+}
+
+/* ---- kid-friendly touches ---------------------------------------------------------------- */
+
+/* Coloured nav pills: each section keeps its own colour (set as --nav on the link). */
+.nav-pill:hover {
+  background: color-mix(in srgb, var(--nav) 14%, transparent);
+}
+.nav-pill-active {
+  color: var(--nav);
+  background: color-mix(in srgb, var(--nav) 18%, transparent);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--nav) 55%, transparent);
+}
+.tab-item-active {
+  color: var(--nav);
+  background: color-mix(in srgb, var(--nav) 14%, transparent);
+}
+.tab-item-active .tab-icon {
+  transform: translateY(-2px) scale(1.15);
+}
+.tab-icon {
+  transition: transform 0.2s;
+}
+.step-card:hover {
+  border-color: var(--step);
+}
+
+/* Orbi the robot floats gently, blinks its antenna and waves. */
+@keyframes orbi-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes orbi-blink {
+  0%,
+  85%,
+  100% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 0.2;
+  }
+}
+@keyframes orbi-wave {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-14deg);
+  }
+}
+@keyframes badge-pop {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+}
+.orbi-float {
+  animation: orbi-float 3.2s ease-in-out infinite;
+}
+.orbi-blink {
+  animation: orbi-blink 2.4s infinite;
+}
+.orbi-wave {
+  transform-origin: 96px 70px;
+  animation: orbi-wave 1.4s ease-in-out infinite;
+}
+.badge-pop {
+  display: inline-block;
+  animation: badge-pop 2.5s ease-in-out infinite;
+}
+
+/* The tail of Orbi's speech bubble. */
+.speech::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  bottom: 10px;
+  border: 8px solid transparent;
+  border-right-color: rgb(var(--color-deep) / 0.6);
 }
 
 @media (prefers-reduced-motion: reduce) {

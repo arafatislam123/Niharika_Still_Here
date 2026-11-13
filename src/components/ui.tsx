@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { getSource } from '../data/sources';
 import type { Artifact, ArtifactStatus, Fact } from '../data/types';
 import { localizeArtifact, useLang } from '../i18n';
+import { GuideTip } from './Guide';
 
 const STATUS_CLASS: Record<ArtifactStatus, string> = {
   active: 'border-emerald-400/60 text-emerald-300',
@@ -61,17 +62,38 @@ export function FactCard({ fact }: { fact: Fact }) {
 export function PageHeader({
   eyebrow,
   title,
+  icon,
+  tip,
   children,
 }: {
   eyebrow: string;
   title: string;
+  /** A big emoji next to the title, so younger children recognise the page at a glance. */
+  icon?: string;
+  /** What to do on this page, said by Orbi the guide. */
+  tip?: ReactNode;
   children?: ReactNode;
 }) {
   return (
-    <header className="container pb-6 pt-10 md:pt-14">
+    <header className="container pb-6 pt-8 md:pt-12">
       <p className="eyebrow">{eyebrow}</p>
-      <h1 className="mt-2 font-display text-3xl font-bold md:text-5xl">{title}</h1>
+      <h1 className="mt-2 flex items-center gap-3 font-display text-3xl font-extrabold md:text-5xl">
+        {icon && (
+          <span
+            aria-hidden
+            className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-raised text-3xl shadow-md md:h-16 md:w-16 md:text-4xl"
+          >
+            {icon}
+          </span>
+        )}
+        {title}
+      </h1>
       {children && <div className="mt-4 max-w-2xl text-lg text-muted">{children}</div>}
+      {tip && (
+        <div className="mt-5 max-w-2xl">
+          <GuideTip>{tip}</GuideTip>
+        </div>
+      )}
     </header>
   );
 }

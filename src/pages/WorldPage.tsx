@@ -133,7 +133,12 @@ export default function WorldPage() {
 
   return (
     <>
-      <PageHeader eyebrow={t('world.eyebrow')} title={world.name}>
+      <PageHeader
+        icon={world.id === 'moon' ? '🌕' : world.id === 'mars' ? '🔴' : '🛰️'}
+        tip={t('tip.world')}
+        eyebrow={t('world.eyebrow')}
+        title={world.name}
+      >
         {world.description}
       </PageHeader>
       <div className="container grid gap-6 lg:grid-cols-[1.4fr_1fr]">

@@ -16,7 +16,12 @@ export default function Artifacts() {
 
   return (
     <>
-      <PageHeader eyebrow={t('artifacts.eyebrow')} title={t('artifacts.title')}>
+      <PageHeader
+        icon="📖"
+        tip={t('tip.artifacts')}
+        eyebrow={t('artifacts.eyebrow')}
+        title={t('artifacts.title')}
+      >
         {t('artifacts.lead')}
       </PageHeader>
       <div className="container">

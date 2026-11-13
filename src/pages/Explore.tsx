@@ -12,7 +12,12 @@ export default function Explore() {
   const { t, lang } = useLang();
   return (
     <>
-      <PageHeader eyebrow={t('explore.eyebrow')} title={t('explore.title')}>
+      <PageHeader
+        icon="🪐"
+        tip={t('tip.explore')}
+        eyebrow={t('explore.eyebrow')}
+        title={t('explore.title')}
+      >
         {t('explore.lead')}
       </PageHeader>
       <div className="container">

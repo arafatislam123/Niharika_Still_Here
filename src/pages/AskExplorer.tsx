@@ -69,7 +69,12 @@ export default function AskExplorer() {
 
   return (
     <>
-      <PageHeader eyebrow={t('ask.eyebrow')} title={t('ask.title', { name: speaker.shortName })}>
+      <PageHeader
+        icon="💬"
+        tip={t('tip.ask')}
+        eyebrow={t('ask.eyebrow')}
+        title={t('ask.title', { name: speaker.shortName })}
+      >
         {t('ask.lead')}
       </PageHeader>
 

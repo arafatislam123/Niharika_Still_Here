@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { quizzes } from '../data/quizzes';
 import type { Quiz } from '../data/types';
 import { PageHeader, SourceLink } from '../components/ui';
@@ -120,10 +121,21 @@ export default function Learn() {
   const progress = useProgress();
   const [active, setActive] = useState<Quiz | null>(null);
   const earned = BADGES.filter((b) => b.earned(progress)).length;
+  const { hash } = useLocation();
+  // The badge counter in the header links to #badges.
+  useEffect(() => {
+    if (hash === '#badges')
+      document.getElementById('badges')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [hash]);
 
   return (
     <>
-      <PageHeader eyebrow={t('learn.eyebrow')} title={t('learn.title')}>
+      <PageHeader
+        icon="🧠"
+        tip={t('tip.learn')}
+        eyebrow={t('learn.eyebrow')}
+        title={t('learn.title')}
+      >
         {t('learn.lead')}
       </PageHeader>
       <div className="container grid gap-8 lg:grid-cols-[1.4fr_1fr]">

@@ -74,7 +74,7 @@ export default function GamePage() {
 
   return (
     <>
-      <PageHeader eyebrow={t('game.eyebrow')} title={t('game.title')}>
+      <PageHeader icon="🎮" tip={t('tip.game')} eyebrow={t('game.eyebrow')} title={t('game.title')}>
         {t('game.lead')}
       </PageHeader>
       <div className="container">

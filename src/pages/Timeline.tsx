@@ -60,7 +60,12 @@ export default function Timeline() {
 
   return (
     <>
-      <PageHeader eyebrow={t('timeline.eyebrow')} title={t('timeline.title')}>
+      <PageHeader
+        icon="⏳"
+        tip={t('tip.timeline')}
+        eyebrow={t('timeline.eyebrow')}
+        title={t('timeline.title')}
+      >
         {t('timeline.lead')}
       </PageHeader>
       <div className="container">

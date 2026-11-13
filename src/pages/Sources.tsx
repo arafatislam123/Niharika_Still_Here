@@ -20,7 +20,7 @@ export default function Sources() {
 
   return (
     <>
-      <PageHeader eyebrow={t('sources.eyebrow')} title={t('sources.title')}>
+      <PageHeader icon="🔗" eyebrow={t('sources.eyebrow')} title={t('sources.title')}>
         {t('sources.lead')}
       </PageHeader>
       <div className="container grid gap-8">
