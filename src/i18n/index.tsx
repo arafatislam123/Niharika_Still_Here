@@ -73,7 +73,7 @@ export function LangProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     document.documentElement.lang = lang;
     document.title =
-      lang === 'bn' ? 'ভুলে যাওয়া অভিযাত্রীরা · Forgotten Explorers' : 'Forgotten Explorers';
+      lang === 'bn' ? 'এখনও এখানে · Still Here' : 'Still Here';
   }, [lang]);
 
   const value = useMemo<LangValue>(

@@ -49,7 +49,7 @@ export default function Layout() {
           >
             <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" className="h-8 w-8" />
             <span lang="en" className="hidden sm:inline">
-              Forgotten <span className="text-accent">Explorers</span>
+              Still <span className="text-accent">Here</span>
             </span>
           </Link>
           <nav aria-label={t('nav.main')} className="hidden xl:block">

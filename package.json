@@ -2,7 +2,7 @@
   "name": "forgotten-explorers",
   "private": true,
   "version": "0.2.0",
-  "description": "Forgotten Explorers: the stories of NASA's retired and silent exploration hardware. NASA Space Apps 2026.",
+  "description": "Still Here: the stories of NASA's retired and silent exploration hardware. NASA Space Apps 2026.",
   "type": "module",
   "engines": {
     "node": ">=20"

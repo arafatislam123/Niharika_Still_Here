@@ -1,5 +1,5 @@
 /**
- * Content model for Forgotten Explorers.
+ * Content model for Still Here.
  *
  * Mirrors the planned PostgreSQL schema (planets, missions, artifacts, stories, media,
  * scientific_discoveries, quizzes, questions) so this static data can later be moved into the
