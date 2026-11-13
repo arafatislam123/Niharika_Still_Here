@@ -26,6 +26,12 @@ to a NASA source.
 | **Timeline + Legacy** | 1962–2022 missions and how each led to the next. | `/timeline` |
 | **Quiz & badges** | 2 quizzes, 8 badges, progress saved in the browser (no accounts). | `/learn` |
 | **Sources** | Every NASA source and the fact-check status. | `/sources` |
+| **বাংলা / English** | Full Bengali translation of the interface, stories, facts, quizzes and game. The AI Explorer understands Bengali questions. Open `?lang=bn` to share a Bengali link. | header button |
+| **3D & AR** | Real NASA 3D models (Apollo LM, Mars Exploration Rover, Pioneer 10) with “View in your room” augmented reality on phones. | story pages |
+| **Pioneer 10 live tracker** | Current distance, speed and light-time from NASA JPL Horizons, counting up every second. | `/explore/deep-space` |
+| **Hear history** | Real Apollo 11 audio (“The Eagle has landed”, “One small step”) with transcripts. | Apollo story |
+| **Then → Now → Next** | How each old mission connects to Artemis, Perseverance and Voyager. | home page |
+| **Time slider** | Drag or “play” through 1962 → today on the timeline. | `/timeline` |
 
 ### The six explorers
 
@@ -44,6 +50,12 @@ breaking are different things.
 
 ## NASA data used
 
+- **NASA JPL Horizons API**: Pioneer 10's position, fetched at build time by
+  `scripts/fetch-horizons.mjs` (Horizons blocks browser requests), then moved forward to "now" in
+  the browser. Refreshed on every deploy.
+- **NASA 3D Resources**: GLB models in `public/models/` (Draco-compressed; the decoder is
+  self-hosted from Three.js by `scripts/copy-draco.mjs`).
+- **NASA audio collection**: Apollo 11 recordings in `public/audio/`.
 - **NASA Image and Video Library API** (`images-api.nasa.gov`): live photos on every story page.
   Public, no API key needed.
 - **Curated knowledge base** (`src/data/`): facts written from NASA Science, NASA JPL, NASA.gov
@@ -56,7 +68,8 @@ breaking are different things.
 ```bash
 npm install
 npm run dev        # http://localhost:5173
-npm test           # content-integrity + AI retriever + API parser tests
+npm test           # content, translation-accuracy, AI retriever and API parser tests
+npm run update-data  # refresh Pioneer 10 position from JPL Horizons
 npm run build      # typecheck + production build into dist/
 ```
 

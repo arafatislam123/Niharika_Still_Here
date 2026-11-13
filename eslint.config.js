@@ -5,7 +5,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['dist', 'coverage'] },
+  { ignores: ['dist', 'coverage', 'public/draco'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -18,7 +18,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['*.config.{ts,js}'],
+    files: ['*.config.{ts,js}', 'scripts/**/*.{js,mjs}'],
     languageOptions: { globals: globals.node },
   },
 );

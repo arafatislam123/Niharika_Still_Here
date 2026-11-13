@@ -1,0 +1,9 @@
+{
+  "source": "NASA JPL Horizons, target -23 (Pioneer 10), Sun-centred vectors",
+  "epoch": "2026-11-13T00:00:00Z",
+  "epochLabel": "2026-Nov-13",
+  "distanceAu": 142.2223573386964,
+  "rangeRateAuPerDay": 0.006827704388867773,
+  "lightTimeDays": 0.8214078319498237,
+  "fetchedAt": "2026-11-13T05:11:17.620Z"
+}

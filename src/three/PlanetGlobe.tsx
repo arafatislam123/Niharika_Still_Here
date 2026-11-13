@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import type { Artifact } from '../data/types';
+import { useLang } from '../i18n';
 import {
   disposeTree,
   latLonToVector,
@@ -35,6 +36,7 @@ export default function PlanetGlobe({
   const onSelectRef = useRef(onSelect);
   onSelectRef.current = onSelect;
   const [supported] = useState(webglAvailable);
+  const { t } = useLang();
   const pinned = artifacts.filter(
     (a) => a.location.lat !== undefined && a.location.lon !== undefined,
   );
@@ -188,12 +190,13 @@ export default function PlanetGlobe({
     observer.observe(mount);
     resize();
 
-    const clock = new THREE.Clock();
+    const clock = new THREE.Timer();
     const world = new THREE.Vector3();
     const toCam = new THREE.Vector3();
     let frame = 0;
     const animate = () => {
       frame = requestAnimationFrame(animate);
+      clock.update();
       const dt = Math.min(clock.getDelta(), 0.05);
       if (targetQuat) {
         globe.quaternion.slerp(targetQuat, reduced ? 1 : Math.min(1, dt * 3));
@@ -267,7 +270,7 @@ export default function PlanetGlobe({
         ))}
       </div>
       <p className="pointer-events-none absolute bottom-3 left-3 rounded-full bg-space/70 px-3 py-1 text-xs text-muted">
-        Pins show real landing coordinates · Surface colours are artistic
+        {t('globe.hint')}
       </p>
     </div>
   );

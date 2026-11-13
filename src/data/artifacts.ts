@@ -36,6 +36,10 @@ export const artifacts: Artifact[] = [
     icon: '🌕',
     color: '#c9ced8',
     imageQuery: 'Apollo 11 lunar module',
+    model: {
+      src: 'models/apollo-lunar-module.glb',
+      note: 'The full Apollo Lunar Module model (ascent and descent stages together).',
+    },
     chapters: [
       {
         title: 'Chapter 1: Two Machines in One',
@@ -59,6 +63,21 @@ export const artifacts: Artifact[] = [
       },
     ],
     facts: [
+      fact(
+        'a11-purpose',
+        'purpose',
+        'The descent stage’s big rocket engine slowed Eagle down so it could land gently on the Moon.',
+        'src-apollo11-lm-nssdc',
+        ['why', 'sent', 'purpose', 'job', 'goal', 'engine', 'slow'],
+      ),
+      fact(
+        'a11-power',
+        'how-it-worked',
+        'The Lunar Module ran on batteries, not solar panels, and the descent stage carried most of them.',
+        'src-apollo11-lm-nssdc',
+        ['power', 'energy', 'battery', 'batteries', 'electricity', 'solar'],
+        'needs-review',
+      ),
       fact(
         'a11-identity',
         'identity',
@@ -188,6 +207,10 @@ export const artifacts: Artifact[] = [
     icon: '🚙',
     color: '#e2683c',
     imageQuery: 'Opportunity rover Mars',
+    model: {
+      src: 'models/mars-exploration-rover.glb',
+      note: 'NASA’s Mars Exploration Rover (Opportunity) model.',
+    },
     plannedLife: {
       value: 90,
       unit: 'sols',
@@ -229,7 +252,7 @@ export const artifacts: Artifact[] = [
         'journey',
         'Opportunity launched in July 2003 and landed on Mars in January 2004. It bounced down inside airbags and rolled into a small crater later named Eagle crater.',
         'src-opportunity',
-        ['land', 'landed', 'when', 'launch', 'airbags', 'arrive', '2004', 'how did you get'],
+        ['land', 'landed', 'when', 'launch', 'airbags', 'arrive', '2004'],
       ),
       fact(
         'opp-purpose',
@@ -368,6 +391,10 @@ export const artifacts: Artifact[] = [
     icon: '⛰️',
     color: '#d9925b',
     imageQuery: 'Spirit rover',
+    model: {
+      src: 'models/mars-exploration-rover.glb',
+      note: 'NASA has no separate Spirit model. Spirit and Opportunity were identical twins, so this is the same design.',
+    },
     plannedLife: {
       value: 90,
       unit: 'sols',
@@ -397,6 +424,14 @@ export const artifacts: Artifact[] = [
       },
     ],
     facts: [
+      fact(
+        'spirit-solar',
+        'how-it-worked',
+        'Like its twin Opportunity, Spirit was powered by solar panels. Martian winters and dust on the panels meant less power.',
+        'src-spirit',
+        ['power', 'energy', 'solar', 'battery', 'sun', 'electricity', 'winter'],
+        'needs-review',
+      ),
       fact(
         'spirit-twin',
         'identity',
@@ -587,6 +622,22 @@ export const artifacts: Artifact[] = [
     ],
     facts: [
       fact(
+        'phx-purpose',
+        'purpose',
+        'Phoenix was sent to study the history of water in the Martian Arctic and to find out whether the soil there could ever have supported tiny life.',
+        'src-phoenix',
+        ['why', 'sent', 'purpose', 'job', 'goal', 'mission'],
+        'needs-review',
+      ),
+      fact(
+        'phx-solar',
+        'how-it-worked',
+        'Phoenix was powered by two round solar panels that opened like fans after landing.',
+        'src-phoenix',
+        ['power', 'energy', 'solar', 'battery', 'sun', 'electricity', 'panels'],
+        'needs-review',
+      ),
+      fact(
         'phx-parts',
         'identity',
         'Phoenix was built partly from hardware made for the Mars Surveyor 2001 lander, a mission that was cancelled. That is why it was named after the mythical bird that rises again.',
@@ -741,7 +792,7 @@ export const artifacts: Artifact[] = [
     chapters: [
       {
         title: 'Chapter 1: Small but Brave',
-        text: 'I am about the size of a microwave oven. On 4 July 1997 my lander bounced onto Mars inside giant airbags. A few days later I rolled down a ramp and became the first wheeled rover ever to explore another planet.',
+        text: 'I am about the size of a microwave oven. On 4 July 1997 my lander bounced onto Mars inside giant airbags. Soon after, I rolled down a ramp and became the first wheeled rover ever to explore another planet.',
         factIds: ['soj-size', 'soj-landing', 'soj-first'],
       },
       {
@@ -761,6 +812,22 @@ export const artifacts: Artifact[] = [
       },
     ],
     facts: [
+      fact(
+        'soj-purpose',
+        'purpose',
+        'Mars Pathfinder was a test mission: it showed a new, low-cost way to land on Mars with airbags, and that a small rover could explore the surface.',
+        'src-pathfinder',
+        ['why', 'sent', 'purpose', 'job', 'goal', 'mission', 'test'],
+        'needs-review',
+      ),
+      fact(
+        'soj-solar',
+        'how-it-worked',
+        'Sojourner was powered by a solar panel on its top.',
+        'src-pathfinder',
+        ['power', 'energy', 'solar', 'battery', 'sun', 'electricity', 'panel'],
+        'needs-review',
+      ),
       fact(
         'soj-size',
         'identity',
@@ -846,7 +913,7 @@ export const artifacts: Artifact[] = [
       {
         date: '4 July 1997',
         title: 'Touchdown',
-        text: 'Pathfinder bounces down in Ares Vallis. Two days later, Sojourner rolls onto Martian soil.',
+        text: 'Pathfinder bounces down in Ares Vallis. Soon after, Sojourner rolls onto Martian soil.',
         sourceId: 'src-pathfinder',
         verification: 'verified',
       },
@@ -891,6 +958,10 @@ export const artifacts: Artifact[] = [
     icon: '🛰️',
     color: '#9db4ff',
     imageQuery: 'Pioneer 10',
+    model: {
+      src: 'models/pioneer-10.glb',
+      note: 'NASA’s Pioneer 10 model.',
+    },
     plannedLife: {
       value: 21,
       unit: 'months',
@@ -920,6 +991,14 @@ export const artifacts: Artifact[] = [
       },
     ],
     facts: [
+      fact(
+        'p10-purpose',
+        'purpose',
+        'Pioneer 10’s job was to explore the asteroid belt and Jupiter, including Jupiter’s strong radiation and magnetic field.',
+        'src-pioneer10',
+        ['why', 'sent', 'purpose', 'job', 'goal', 'mission'],
+        'needs-review',
+      ),
       fact('p10-launch', 'journey', 'Pioneer 10 launched on 2 March 1972.', 'src-pioneer10', [
         'launch',
         'when',

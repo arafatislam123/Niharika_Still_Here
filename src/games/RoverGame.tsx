@@ -6,6 +6,7 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import * as THREE from 'three';
 import { SourceLink } from '../components/ui';
+import { useLang } from '../i18n';
 import {
   disposeTree,
   makeGlowTexture,
@@ -128,6 +129,7 @@ export default function RoverGame({
   });
   const [modal, setModal] = useState<Modal | null>(null);
   const [supported] = useState(webglAvailable);
+  const { t, n } = useLang();
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
@@ -286,7 +288,7 @@ export default function RoverGame({
     window.addEventListener('keydown', keyDown);
     window.addEventListener('keyup', keyUp);
 
-    const clock = new THREE.Clock();
+    const clock = new THREE.Timer();
     const camTarget = new THREE.Vector3();
     let hudTimer = 0;
     let frame = 0;
@@ -294,8 +296,9 @@ export default function RoverGame({
 
     const animate = () => {
       frame = requestAnimationFrame(animate);
+      clock.update();
       const dt = Math.min(clock.getDelta(), 0.05);
-      const t = clock.elapsedTime;
+      const t = clock.getElapsed();
 
       if (!g.paused && !g.failed) {
         g.playTime += dt;
@@ -459,15 +462,12 @@ export default function RoverGame({
   });
 
   if (!supported) {
-    return (
-      <p className="card text-muted">
-        This game needs 3D graphics (WebGL), which your browser does not support.
-      </p>
-    );
+    return <p className="card text-muted">{t('game.noWebgl')}</p>;
   }
 
   const batteryColor =
     hud.battery > 50 ? 'bg-emerald-400' : hud.battery > 20 ? 'bg-amber-400' : 'bg-red-500';
+  const pad = 'h-14 w-14 rounded-2xl bg-space/80 text-2xl active:bg-accent active:text-space';
 
   return (
     <div className="relative h-[70vh] min-h-[460px] select-none overflow-hidden rounded-3xl border border-line">
@@ -477,24 +477,24 @@ export default function RoverGame({
       <div className="pointer-events-none absolute inset-x-0 top-0 flex flex-wrap items-start justify-between gap-2 p-3">
         <div className="rounded-2xl bg-space/80 px-4 py-2 text-sm">
           <p className="font-bold">
-            Mission {mission.number}: {mission.title}
+            {t('game.mission', { n: n(mission.number) })}: {mission.title}
           </p>
           <p className="text-muted">
-            Sites: {hud.visited.length}/{mission.sites.length} · Science points:{' '}
-            <strong className="text-accent">{hud.score}</strong>
+            {t('game.hudSites', { done: n(hud.visited.length), total: n(mission.sites.length) })} ·{' '}
+            {t('game.hudPoints')} <strong className="text-accent">{n(hud.score)}</strong>
           </p>
         </div>
         <div
           className="w-44 rounded-2xl bg-space/80 px-4 py-2 text-sm"
           role="meter"
-          aria-label="Battery"
+          aria-label={t('game.battery')}
           aria-valuenow={Math.round(hud.battery)}
           aria-valuemin={0}
           aria-valuemax={100}
         >
           <p className="flex justify-between font-bold">
-            <span>🔋 Battery</span>
-            <span>{Math.round(hud.battery)}%</span>
+            <span>{t('game.battery')}</span>
+            <span>{n(Math.round(hud.battery))}%</span>
           </p>
           <div className="mt-1 h-2.5 rounded-full bg-raised">
             <div
@@ -503,66 +503,43 @@ export default function RoverGame({
             />
           </div>
           {hud.battery <= 0 && hud.phase !== 'storm-sleep' && (
-            <p className="mt-1 text-xs text-amber-300">Empty! Wait in the sunlight to recharge.</p>
+            <p className="mt-1 text-xs text-amber-300">{t('game.empty')}</p>
           )}
         </div>
       </div>
 
       {hud.stormLeft > 0 && (
         <p
-          className="pointer-events-none absolute left-1/2 top-24 -translate-x-1/2 rounded-full bg-red-900/80 px-4 py-2 text-sm font-bold"
+          className="pointer-events-none absolute left-1/2 top-24 -translate-x-1/2 rounded-full bg-red-900/80 px-4 py-2 text-center text-sm font-bold"
           role="status"
         >
-          🌪️ Dust storm!{' '}
-          {hud.phase === 'storm-sleep'
-            ? 'Sleeping to save power…'
-            : 'No sunlight reaching the panels!'}{' '}
-          {Math.ceil(hud.stormLeft)}s
+          {t('game.storm')} {hud.phase === 'storm-sleep' ? t('game.sleeping') : t('game.noSun')}{' '}
+          {n(Math.ceil(hud.stormLeft))}s
         </p>
       )}
 
       {/* Touch / mouse controls */}
       <div
         className="absolute bottom-4 right-4 grid grid-cols-3 gap-2"
-        aria-label="Driving controls"
+        aria-label={t('game.controls')}
       >
         <span />
-        <button
-          type="button"
-          aria-label="Drive forward"
-          className="h-14 w-14 rounded-2xl bg-space/80 text-2xl active:bg-accent active:text-space"
-          {...hold('forward')}
-        >
+        <button type="button" aria-label={t('game.forward')} className={pad} {...hold('forward')}>
           ▲
         </button>
         <span />
-        <button
-          type="button"
-          aria-label="Turn left"
-          className="h-14 w-14 rounded-2xl bg-space/80 text-2xl active:bg-accent active:text-space"
-          {...hold('left')}
-        >
+        <button type="button" aria-label={t('game.left')} className={pad} {...hold('left')}>
           ◀
         </button>
-        <button
-          type="button"
-          aria-label="Reverse"
-          className="h-14 w-14 rounded-2xl bg-space/80 text-2xl active:bg-accent active:text-space"
-          {...hold('back')}
-        >
+        <button type="button" aria-label={t('game.reverse')} className={pad} {...hold('back')}>
           ▼
         </button>
-        <button
-          type="button"
-          aria-label="Turn right"
-          className="h-14 w-14 rounded-2xl bg-space/80 text-2xl active:bg-accent active:text-space"
-          {...hold('right')}
-        >
+        <button type="button" aria-label={t('game.right')} className={pad} {...hold('right')}>
           ▶
         </button>
       </div>
-      <p className="pointer-events-none absolute bottom-4 left-4 hidden rounded-full bg-space/70 px-3 py-1 text-xs text-muted md:block">
-        Drive with arrow keys or W A S D · Simplified simulation, not real rover physics
+      <p className="pointer-events-none absolute bottom-4 left-4 hidden max-w-[60%] rounded-full bg-space/70 px-3 py-1 text-xs text-muted md:block">
+        {t('game.hint')}
       </p>
 
       {modal && (
@@ -588,26 +565,23 @@ export default function RoverGame({
             {modal.kind === 'storm-choice' && (
               <>
                 <h2 id="game-modal-title" className="font-display text-2xl font-bold">
-                  🌪️ A dust storm is coming!
+                  {t('game.stormTitle')}
                 </h2>
-                <p className="mt-2">
-                  Dust will soon block most of the sunlight your solar panels need. What should your
-                  rover do?
-                </p>
+                <p className="mt-2">{t('game.stormText')}</p>
                 <div className="mt-4 grid gap-2">
                   <button
                     type="button"
                     className="btn-ghost justify-start text-left"
                     onClick={() => chooseStorm(false)}
                   >
-                    🚀 Keep driving to reach the rim fast
+                    {t('game.stormDrive')}
                   </button>
                   <button
                     type="button"
                     className="btn-ghost justify-start text-left"
                     onClick={() => chooseStorm(true)}
                   >
-                    😴 Park and go into low-power sleep mode
+                    {t('game.stormSleep')}
                   </button>
                 </div>
               </>
@@ -615,53 +589,40 @@ export default function RoverGame({
             {modal.kind === 'storm-cleared' && (
               <>
                 <h2 id="game-modal-title" className="font-display text-2xl font-bold">
-                  ☀️ The storm has passed!
+                  {t('game.clearedTitle')}
                 </h2>
-                <p className="mt-2">
-                  Good thinking. Saving energy kept your rover alive. A gust of wind even blew some
-                  dust off your panels (+35% battery). Real Mars rovers were sometimes helped by
-                  “cleaning events” like this.
-                </p>
+                <p className="mt-2">{t('game.clearedText')}</p>
                 <div className="mt-2">
                   <SourceLink sourceId="src-opportunity" compact />
                 </div>
                 <button type="button" className="btn-primary mt-4" onClick={afterSite}>
-                  Continue →
+                  {t('common.continue')}
                 </button>
               </>
             )}
             {modal.kind === 'fail' && (
               <>
                 <h2 id="game-modal-title" className="font-display text-2xl font-bold">
-                  🔋 Battery empty
+                  {t('game.failTitle')}
                 </h2>
-                <p className="mt-2">
-                  With no sunlight, driving drained the battery. This is what happened to
-                  Opportunity in 2018: a planet-wide dust storm blocked the Sun and its solar panels
-                  could not keep it running.
-                </p>
-                <p className="mt-2 font-semibold">
-                  Tip: in a storm, save power and wait for the sky to clear.
-                </p>
+                <p className="mt-2">{t('game.failText')}</p>
+                <p className="mt-2 font-semibold">{t('game.failTip')}</p>
                 <div className="mt-2">
                   <SourceLink sourceId="src-opportunity-end" compact />
                 </div>
                 <button type="button" className="btn-primary mt-4" onClick={onRestart}>
-                  Try again
+                  {t('game.retry')}
                 </button>
               </>
             )}
             {modal.kind === 'complete' && (
               <>
                 <h2 id="game-modal-title" className="font-display text-2xl font-bold">
-                  🎉 Mission complete!
+                  {t('game.completeTitle')}
                 </h2>
-                <p className="mt-2">
-                  You earned <strong className="text-accent">{game.current.score}</strong> science
-                  points and a new badge. Check the Learn page to see your badges.
-                </p>
+                <p className="mt-2">{t('game.completeText', { score: n(game.current.score) })}</p>
                 <button type="button" className="btn-primary mt-4" onClick={onRestart}>
-                  Play again
+                  {t('game.again')}
                 </button>
               </>
             )}
@@ -683,10 +644,11 @@ function SiteCard({
   onPick: (i: number) => void;
   onDone: () => void;
 }) {
+  const { t } = useLang();
   const q = site.question;
   return (
     <>
-      <p className="eyebrow">Learning card · +10 points</p>
+      <p className="eyebrow">{t('game.card')}</p>
       <h2 id="game-modal-title" className="mt-1 font-display text-2xl font-bold">
         {site.card.title}
       </h2>
@@ -722,15 +684,14 @@ function SiteCard({
           </div>
           {picked !== undefined && (
             <p className="mt-3" role="status">
-              {picked === q.answer ? '✅ Correct! +20 points. ' : '❌ Not quite. '}
-              {q.explanation}
+              {picked === q.answer ? t('game.correct') : t('game.wrong')} {q.explanation}
             </p>
           )}
         </div>
       )}
       {(!q || picked !== undefined) && (
         <button type="button" className="btn-primary mt-4" onClick={onDone}>
-          Continue →
+          {t('common.continue')}
         </button>
       )}
     </>

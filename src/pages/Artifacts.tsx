@@ -3,20 +3,25 @@ import { artifacts } from '../data/artifacts';
 import { worlds } from '../data/worlds';
 import type { WorldId } from '../data/types';
 import { ArtifactCard, PageHeader } from '../components/ui';
+import { localizeWorld, useLang } from '../i18n';
 
 export default function Artifacts() {
+  const { t, lang } = useLang();
   const [filter, setFilter] = useState<WorldId | 'all'>('all');
   const shown = filter === 'all' ? artifacts : artifacts.filter((a) => a.world === filter);
+  const filters = [
+    { id: 'all' as const, name: t('artifacts.all') },
+    ...worlds.map((w) => ({ id: w.id, name: localizeWorld(w, lang).name })),
+  ];
 
   return (
     <>
-      <PageHeader eyebrow="Artifact catalogue" title="The forgotten explorers">
-        Six machines across the Moon, Mars and deep space. None of them is “just junk”: each one
-        finished a mission and taught us something new.
+      <PageHeader eyebrow={t('artifacts.eyebrow')} title={t('artifacts.title')}>
+        {t('artifacts.lead')}
       </PageHeader>
       <div className="container">
-        <div role="group" aria-label="Filter by destination" className="flex flex-wrap gap-2">
-          {[{ id: 'all' as const, name: 'All' }, ...worlds].map((w) => (
+        <div role="group" aria-label={t('artifacts.filter')} className="flex flex-wrap gap-2">
+          {filters.map((w) => (
             <button
               key={w.id}
               type="button"

@@ -23,6 +23,15 @@ Accuracy matters more than any feature. Before the final submission, a **second*
 | Sojourner “Late 1997: Listening” | Confirm when NASA formally ended Pathfinder operations |
 | `p10-legacy`: Pioneer paved the way for Voyager | Cited source should state this directly |
 | Pioneer 10 “February 2003: No answer” | Confirm the date of the final contact attempt |
+| `a11-power`: LM ran on batteries; descent stage carried most | Confirm battery split on the NSSDC page |
+| `spirit-solar`, `phx-solar`, `soj-solar` | Confirm power-source wording (Phoenix: two round, fan-like arrays) |
+| `phx-purpose`, `soj-purpose`, `p10-purpose` | Confirm mission goals match the cited pages |
+
+## Bengali translation
+
+Every Bengali sentence in `src/i18n/content.bn.ts` is checked automatically: it must contain
+exactly the same numbers and dates as the English (`src/i18n/content.bn.test.ts`). A fluent
+Bengali speaker should still read the translations once for meaning and tone.
 
 ## Also check (marked `verified` by the author, but worth a second look)
 

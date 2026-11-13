@@ -108,6 +108,30 @@ export const sources: Source[] = [
     url: 'https://www.nasa.gov/mission/apollo-17/',
   },
   {
+    id: 'src-horizons',
+    title: 'Horizons System (solar system positions)',
+    publisher: 'NASA JPL',
+    url: 'https://ssd.jpl.nasa.gov/horizons/',
+  },
+  {
+    id: 'src-nasa-3d',
+    title: 'NASA 3D Resources',
+    publisher: 'NASA',
+    url: 'https://science.nasa.gov/3d-resources/',
+  },
+  {
+    id: 'src-nasa-audio',
+    title: 'NASA audio and ringtones (Apollo 11 recordings)',
+    publisher: 'NASA',
+    url: 'https://www.nasa.gov/audio-and-ringtones/',
+  },
+  {
+    id: 'src-artemis',
+    title: 'Artemis program',
+    publisher: 'NASA',
+    url: 'https://www.nasa.gov/humans-in-space/artemis/',
+  },
+  {
     id: 'src-nasa-images',
     title: 'NASA Image and Video Library',
     publisher: 'NASA',

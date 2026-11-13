@@ -68,7 +68,7 @@ export const timeline: TimelineEvent[] = [
     year: 1972,
     date: 'December 1972',
     title: 'Apollo 17: the last Moon landing (so far)',
-    text: 'The last time humans walked on the Moon in the 20th century.',
+    text: 'The final crewed landing of the Apollo program.',
     world: 'moon',
     sourceId: 'src-apollo17',
   },

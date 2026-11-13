@@ -2,38 +2,47 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { getSource } from '../data/sources';
 import type { Artifact, ArtifactStatus, Fact } from '../data/types';
+import { localizeArtifact, useLang } from '../i18n';
 
-export const STATUS_LABELS: Record<ArtifactStatus, { label: string; className: string }> = {
-  active: { label: 'Active', className: 'border-emerald-400/60 text-emerald-300' },
-  inactive: { label: 'Inactive', className: 'border-slate-400/60 text-slate-300' },
-  'mission-completed': { label: 'Mission Completed', className: 'border-sky-400/60 text-sky-300' },
-  'lost-contact': { label: 'Lost Contact', className: 'border-amber-400/60 text-amber-300' },
-  'partially-operational': {
-    label: 'Partially Operational',
-    className: 'border-lime-400/60 text-lime-300',
-  },
-  unknown: { label: 'Unknown', className: 'border-slate-400/60 text-slate-300' },
+const STATUS_CLASS: Record<ArtifactStatus, string> = {
+  active: 'border-emerald-400/60 text-emerald-300',
+  inactive: 'border-slate-400/60 text-slate-300',
+  'mission-completed': 'border-sky-400/60 text-sky-300',
+  'lost-contact': 'border-amber-400/60 text-amber-300',
+  'partially-operational': 'border-lime-400/60 text-lime-300',
+  unknown: 'border-slate-400/60 text-slate-300',
 };
 
 export function StatusBadge({ status }: { status: ArtifactStatus }) {
-  const s = STATUS_LABELS[status];
-  return <span className={`chip ${s.className}`}>● {s.label}</span>;
+  const { t } = useLang();
+  return <span className={`chip ${STATUS_CLASS[status]}`}>● {t(`status.${status}`)}</span>;
 }
 
 export function SourceLink({ sourceId, compact }: { sourceId: string; compact?: boolean }) {
+  const { t } = useLang();
   const source = getSource(sourceId);
   return (
     <a
       href={source.url}
       target="_blank"
       rel="noreferrer"
+      lang="en"
       className="chip border-deep/40 text-deep hover:border-deep"
       title={source.title}
     >
       <span aria-hidden>🔗</span>
       {compact ? source.publisher : `${source.publisher}: ${source.title}`}
-      <span className="sr-only">(opens in a new tab)</span>
+      <span className="sr-only">{t('common.newTab')}</span>
     </a>
+  );
+}
+
+export function ReviewBadge() {
+  const { t } = useLang();
+  return (
+    <span className="chip border-amber-400/50 text-amber-200" title={t('common.reviewingTitle')}>
+      {t('common.reviewing')}
+    </span>
   );
 }
 
@@ -43,14 +52,7 @@ export function FactCard({ fact }: { fact: Fact }) {
       <p className="leading-relaxed">{fact.text}</p>
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <SourceLink sourceId={fact.sourceId} compact />
-        {fact.verification === 'needs-review' && (
-          <span
-            className="chip border-amber-400/50 text-amber-200"
-            title="A team member still has to check this fact against the source."
-          >
-            ⚠ Being double-checked
-          </span>
-        )}
+        {fact.verification === 'needs-review' && <ReviewBadge />}
       </div>
     </li>
   );
@@ -74,7 +76,9 @@ export function PageHeader({
   );
 }
 
-export function ArtifactCard({ artifact }: { artifact: Artifact }) {
+export function ArtifactCard({ artifact: raw }: { artifact: Artifact }) {
+  const { lang, t } = useLang();
+  const artifact = localizeArtifact(raw, lang);
   return (
     <Link
       to={`/artifacts/${artifact.id}`}
@@ -94,7 +98,7 @@ export function ArtifactCard({ artifact }: { artifact: Artifact }) {
         </p>
       </div>
       <p className="flex-1 italic">“{artifact.tagline}”</p>
-      <span className="text-sm font-semibold text-accent">Read the story →</span>
+      <span className="text-sm font-semibold text-accent">{t('common.readStory')}</span>
     </Link>
   );
 }

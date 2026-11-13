@@ -24,6 +24,8 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      # Refresh Pioneer 10's position from NASA JPL Horizons (keeps the saved snapshot if it fails).
+      - run: node scripts/fetch-horizons.mjs
       - run: npm run build
         env:
           # The site lives at https://<user>.github.io/<repo>/

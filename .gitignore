@@ -15,3 +15,6 @@ public/decoders/meshopt/meshopt_decoder.js
 
 .DS_Store
 Thumbs.db
+
+# Copied from node_modules by scripts/copy-draco.mjs
+public/draco/

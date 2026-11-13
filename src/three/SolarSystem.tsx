@@ -7,6 +7,8 @@ import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import type { WorldId } from '../data/types';
+import { useLang } from '../i18n';
+import type { StringKey } from '../i18n/strings';
 import {
   disposeTree,
   makeGlowTexture,
@@ -65,15 +67,14 @@ const BODIES: Body[] = [
 
 interface Label {
   id: string;
-  name: string;
+  name: StringKey;
   target?: WorldId;
-  hint?: string;
 }
 
 const LABELS: Label[] = [
-  ...BODIES.map((b) => ({ id: b.id, name: b.name, target: b.target })),
-  { id: 'moon', name: 'The Moon', target: 'moon' as WorldId },
-  { id: 'pioneer', name: 'Pioneer 10', target: 'deep-space' as WorldId, hint: 'Deep space' },
+  ...BODIES.map((b) => ({ id: b.id, name: `planet.${b.id}` as StringKey, target: b.target })),
+  { id: 'moon', name: 'planet.moon', target: 'moon' },
+  { id: 'pioneer', name: 'solar.deepSpace', target: 'deep-space' },
 ];
 
 export default function SolarSystem({
@@ -88,6 +89,9 @@ export default function SolarSystem({
   const onSelectRef = useRef(onSelect);
   onSelectRef.current = onSelect;
   const [supported] = useState(webglAvailable);
+  const { t, lang } = useLang();
+  const labelText = (l: Label) =>
+    l.id === 'pioneer' ? (lang === 'bn' ? 'পাইওনিয়ার ১০' : 'Pioneer 10') : t(l.name);
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -281,12 +285,13 @@ export default function SolarSystem({
     observer.observe(mount);
     resize();
 
-    const clock = new THREE.Clock();
+    const clock = new THREE.Timer();
     const tmp = new THREE.Vector3();
     let frame = 0;
 
     const animate = () => {
       frame = requestAnimationFrame(animate);
+      clock.update();
       const dt = Math.min(clock.getDelta(), 0.05);
       const rate = reduced ? 0 : 0.12;
       for (const p of pivots) {
@@ -328,9 +333,7 @@ export default function SolarSystem({
       <div
         className={`card flex flex-col items-center justify-center gap-4 text-center ${className}`}
       >
-        <p className="text-muted">
-          Your browser cannot show 3D graphics, but you can still explore:
-        </p>
+        <p className="text-muted">{t('solar.noWebgl')}</p>
         <div className="flex flex-wrap justify-center gap-2">
           {LABELS.filter((l) => l.target).map((l) => (
             <button
@@ -339,7 +342,7 @@ export default function SolarSystem({
               className="btn-ghost"
               onClick={() => onSelect(l.target!)}
             >
-              {l.name}
+              {labelText(l)}
             </button>
           ))}
         </div>
@@ -365,8 +368,11 @@ export default function SolarSystem({
               onClick={() => onSelect(l.target!)}
               className="pointer-events-auto absolute left-0 top-0 whitespace-nowrap rounded-full border border-accent/70 bg-space/80 px-3 py-1 text-xs font-bold text-accent shadow transition-opacity hover:bg-accent hover:text-space md:text-sm"
             >
-              {l.name}
-              {l.hint && <span className="ml-1 font-normal opacity-80">· {l.hint}</span>} →
+              {labelText(l)}
+              {l.id === 'pioneer' && (
+                <span className="ml-1 font-normal opacity-80">· {t('solar.deepSpace')}</span>
+              )}{' '}
+              →
             </button>
           ) : (
             <span
@@ -378,13 +384,13 @@ export default function SolarSystem({
               }}
               className="absolute left-0 top-0 whitespace-nowrap text-[11px] text-muted transition-opacity"
             >
-              {l.name}
+              {labelText(l)}
             </span>
           ),
         )}
       </div>
       <p className="pointer-events-none absolute bottom-3 left-3 rounded-full bg-space/70 px-3 py-1 text-xs text-muted">
-        Drag to spin · Scroll or pinch to zoom · Not to scale
+        {t('solar.hint')}
       </p>
     </div>
   );

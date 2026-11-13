@@ -1,16 +1,34 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, ScrollRestoration, useLocation } from 'react-router-dom';
+import { useLang } from '../i18n';
+import type { StringKey } from '../i18n/strings';
 
-const NAV = [
-  { to: '/explore', label: 'Explore' },
-  { to: '/artifacts', label: 'Artifacts' },
-  { to: '/ask', label: 'AI Explorer' },
-  { to: '/game', label: 'Mission Game' },
-  { to: '/timeline', label: 'Timeline' },
-  { to: '/learn', label: 'Learn' },
+const NAV: { to: string; label: StringKey }[] = [
+  { to: '/explore', label: 'nav.explore' },
+  { to: '/artifacts', label: 'nav.artifacts' },
+  { to: '/ask', label: 'nav.ask' },
+  { to: '/game', label: 'nav.game' },
+  { to: '/timeline', label: 'nav.timeline' },
+  { to: '/learn', label: 'nav.learn' },
 ];
 
+function LanguageToggle() {
+  const { lang, setLang, t } = useLang();
+  return (
+    <button
+      type="button"
+      onClick={() => setLang(lang === 'en' ? 'bn' : 'en')}
+      aria-label={t('lang.switchLabel')}
+      lang={lang === 'en' ? 'bn' : 'en'}
+      className="chip min-h-10 border-accent/60 px-3 text-sm text-accent hover:bg-accent hover:text-space"
+    >
+      🌐 {t('lang.switchTo')}
+    </button>
+  );
+}
+
 export default function Layout() {
+  const { t } = useLang();
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   useEffect(() => setOpen(false), [pathname]);
@@ -21,20 +39,20 @@ export default function Layout() {
         href="#main"
         className="sr-only z-50 rounded bg-accent px-4 py-2 text-space focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
       >
-        Skip to content
+        {t('nav.skip')}
       </a>
       <header className="sticky top-0 z-40 border-b border-line/70 bg-space/85 backdrop-blur">
-        <div className="container flex h-16 items-center justify-between gap-4">
+        <div className="container flex h-16 items-center justify-between gap-3">
           <Link
             to="/"
-            className="flex items-center gap-2 font-display text-lg font-bold tracking-wide"
+            className="flex shrink-0 items-center gap-2 font-display text-lg font-bold tracking-wide"
           >
             <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" className="h-8 w-8" />
-            <span>
+            <span lang="en" className="hidden sm:inline">
               Forgotten <span className="text-accent">Explorers</span>
             </span>
           </Link>
-          <nav aria-label="Main" className="hidden lg:block">
+          <nav aria-label={t('nav.main')} className="hidden xl:block">
             <ul className="flex gap-1">
               {NAV.map((item) => (
                 <li key={item.to}>
@@ -46,27 +64,30 @@ export default function Layout() {
                       }`
                     }
                   >
-                    {item.label}
+                    {t(item.label)}
                   </NavLink>
                 </li>
               ))}
             </ul>
           </nav>
-          <button
-            type="button"
-            className="btn-ghost min-h-10 px-4 lg:hidden"
-            aria-expanded={open}
-            aria-controls="mobile-nav"
-            onClick={() => setOpen((v) => !v)}
-          >
-            {open ? 'Close' : 'Menu'}
-          </button>
+          <div className="flex items-center gap-2">
+            <LanguageToggle />
+            <button
+              type="button"
+              className="btn-ghost min-h-10 px-4 xl:hidden"
+              aria-expanded={open}
+              aria-controls="mobile-nav"
+              onClick={() => setOpen((v) => !v)}
+            >
+              {open ? t('nav.close') : t('nav.menu')}
+            </button>
+          </div>
         </div>
         {open && (
           <nav
             id="mobile-nav"
-            aria-label="Main"
-            className="border-t border-line bg-space lg:hidden"
+            aria-label={t('nav.main')}
+            className="border-t border-line bg-space xl:hidden"
           >
             <ul className="container grid gap-1 py-3">
               {NAV.map((item) => (
@@ -77,7 +98,7 @@ export default function Layout() {
                       `block rounded-xl px-4 py-3 font-semibold ${isActive ? 'bg-raised text-accent' : ''}`
                     }
                   >
-                    {item.label}
+                    {t(item.label)}
                   </NavLink>
                 </li>
               ))}
@@ -92,15 +113,14 @@ export default function Layout() {
 
       <footer className="mt-16 border-t border-line/70 bg-space/90">
         <div className="container grid gap-3 py-8 text-sm text-muted md:flex md:items-center md:justify-between">
-          <p>
-            Built for the NASA Space Apps Challenge 2026. An independent student project:{' '}
-            <strong>no NASA endorsement is implied.</strong> Images and data courtesy of NASA.
-          </p>
-          <p className="flex gap-4">
+          <p className="max-w-3xl">{t('footer.text')}</p>
+          <p className="flex shrink-0 gap-4">
             <Link to="/sources" className="underline hover:text-ink">
-              Sources &amp; credits
+              {t('footer.sources')}
             </Link>
-            <span aria-label="Build version">build {__BUILD_ID__}</span>
+            <span>
+              {t('footer.build')} {__BUILD_ID__}
+            </span>
           </p>
         </div>
       </footer>

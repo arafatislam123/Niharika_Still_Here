@@ -32,3 +32,42 @@ describe('AI Explorer retriever', () => {
     expect(answer.facts).toHaveLength(0);
   });
 });
+
+describe('AI Explorer in Bengali', () => {
+  const ids = (speaker: string, q: string) => askLocal(speaker, q).facts.map((f) => f.id);
+
+  it('understands “why did you stop communicating?”', () => {
+    expect(ids('opportunity', 'তুমি যোগাযোগ বন্ধ করলে কেন?')[0]).toBe('opp-storm');
+  });
+
+  it('understands discovery questions', () => {
+    expect(ids('phoenix', 'তুমি কী আবিষ্কার করেছিলে?')[0]).toMatch(
+      /^phx-(ice|oven|perchlorate|snow)$/,
+    );
+  });
+
+  it('understands where-are-you-now questions', () => {
+    expect(ids('pioneer-10', 'তুমি এখন কোথায়?')[0]).toBe('p10-aldebaran');
+  });
+
+  it('understands how-far questions about another explorer', () => {
+    const answer = askLocal('spirit', 'অপরচুনিটি কত দূর চলেছিল?');
+    expect(answer.aboutId).toBe('opportunity');
+    expect(answer.facts[0].id).toBe('opp-distance');
+  });
+
+  it('still refuses to guess', () => {
+    expect(askLocal('sojourner', 'তোমার প্রিয় খাবার কী?').known).toBe(false);
+  });
+
+  it('every suggested question finds an answer for every explorer', async () => {
+    const { artifacts } = await import('../data/artifacts');
+    const { SUGGESTED_QUESTIONS } = await import('./explorerAI');
+    const misses: string[] = [];
+    for (const a of artifacts)
+      for (const s of SUGGESTED_QUESTIONS)
+        if (!askLocal(a.id, s.en).known) misses.push(`${a.id}: ${s.en}`);
+    // Apollo's descent stage never "stopped communicating", so that one may legitimately miss.
+    expect(misses.filter((m) => !m.startsWith('apollo'))).toEqual([]);
+  });
+});

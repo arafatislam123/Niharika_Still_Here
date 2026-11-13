@@ -91,6 +91,8 @@ export interface Artifact {
   color: string;
   /** Search term for the NASA Image and Video Library. */
   imageQuery: string;
+  /** NASA 3D Resources model (GLB file in public/), shown with AR support. */
+  model?: { src: string; note: string };
   plannedLife?: { value: number; unit: string; actual: number; note: string };
   chapters: StoryChapter[];
   facts: Fact[];

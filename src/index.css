@@ -14,8 +14,13 @@
   --color-moon: 201 206 216;
   --color-mars: 255 122 69;
   --color-deep: 143 168 255;
-  --font-ui: ui-rounded, 'SF Pro Rounded', 'Nunito', 'Segoe UI', system-ui, sans-serif;
-  --font-display: 'Trebuchet MS', ui-rounded, 'Segoe UI', system-ui, sans-serif;
+  /* Bengali-capable fonts are listed so বাংলা text renders well on Windows, Android and Apple. */
+  --font-ui:
+    ui-rounded, 'SF Pro Rounded', 'Nunito', 'Segoe UI', 'Noto Sans Bengali', 'Nirmala UI',
+    'Bangla Sangam MN', 'Kohinoor Bangla', system-ui, sans-serif;
+  --font-display:
+    'Trebuchet MS', ui-rounded, 'Segoe UI', 'Noto Sans Bengali', 'Nirmala UI', 'Bangla Sangam MN',
+    system-ui, sans-serif;
   color-scheme: dark;
 }
 
@@ -46,6 +51,14 @@ body {
   outline: 3px solid rgb(var(--color-accent));
   outline-offset: 2px;
   border-radius: 6px;
+}
+
+/* Bengali script needs a little more line height and no letter-spacing. */
+:lang(bn) body {
+  line-height: 1.7;
+}
+:lang(bn) .eyebrow {
+  letter-spacing: 0.04em;
 }
 
 @layer components {
