@@ -388,10 +388,10 @@ export const en = {
 
   // cinema mode
   'cinema.button': '🎬 Watch as a movie',
-  'cinema.lead': 'Full-screen animated story with subtitles and narration.',
+  'cinema.lead':
+    'Full-screen animated story with subtitles and narration. Artist’s animation; the events come from NASA records.',
   'cinema.dialog': 'Cinema mode: {name}',
   'cinema.loading': 'Loading the NASA 3D model…',
-  'cinema.label': 'Artist’s animation · events from NASA records',
   'cinema.play': '▶ Play',
   'cinema.pause': '❚❚ Pause',
   'cinema.prev': '⏮ Previous chapter',
@@ -402,10 +402,6 @@ export const en = {
   'cinema.end': 'The End',
   'cinema.endText': 'Their missions ended. Their stories live on.',
   'cinema.replay': '↺ Watch again',
-  'cinema.keys': 'Space: pause · ← →: chapters · Esc: close',
-  'cinema.voiceHuman': '🎙️ Voice: recorded by our team',
-  'cinema.voiceDevice':
-    '🔊 Voice: your device’s text-to-speech. Tip: Microsoft Edge has the most natural voices.',
   'cinema.voiceNone':
     'This device has no Bengali voice. Open the site in Microsoft Edge or Chrome on Android to hear it.',
   'cinema.opp.year': 'Year {year}',
@@ -789,10 +785,10 @@ export const bn: Record<StringKey, string> = {
   'sources.c7': 'এটি নাসা স্পেস অ্যাপস চ্যালেঞ্জের একটি স্বাধীন প্রকল্প। নাসার কোনো অনুমোদন বোঝানো হয়নি।',
 
   'cinema.button': '🎬 সিনেমার মতো দেখো',
-  'cinema.lead': 'সাবটাইটেল আর বর্ণনাসহ পুরো স্ক্রিনে অ্যানিমেশনে গল্প।',
+  'cinema.lead':
+    'সাবটাইটেল আর বর্ণনাসহ পুরো স্ক্রিনে অ্যানিমেশনে গল্প। শিল্পীর কল্পনায় অ্যানিমেশন; ঘটনাগুলো নাসার রেকর্ড থেকে।',
   'cinema.dialog': 'সিনেমা মোড: {name}',
   'cinema.loading': 'নাসার থ্রিডি মডেল লোড হচ্ছে…',
-  'cinema.label': 'শিল্পীর কল্পনায় অ্যানিমেশন · ঘটনাগুলো নাসার রেকর্ড থেকে',
   'cinema.play': '▶ চালাও',
   'cinema.pause': '❚❚ থামাও',
   'cinema.prev': '⏮ আগের অধ্যায়',
@@ -803,10 +799,6 @@ export const bn: Record<StringKey, string> = {
   'cinema.end': 'সমাপ্ত',
   'cinema.endText': 'তাদের মিশন শেষ হয়েছে। তাদের গল্প বেঁচে আছে।',
   'cinema.replay': '↺ আবার দেখো',
-  'cinema.keys': 'স্পেস: থামাও · ← →: অধ্যায় · Esc: বন্ধ',
-  'cinema.voiceHuman': '🎙️ কণ্ঠ: আমাদের দলের রেকর্ড করা',
-  'cinema.voiceDevice':
-    '🔊 কণ্ঠ: তোমার ডিভাইসের স্বয়ংক্রিয় কণ্ঠ। পরামর্শ: Microsoft Edge-এ সবচেয়ে স্বাভাবিক কণ্ঠ পাওয়া যায়।',
   'cinema.voiceNone':
     'এই ডিভাইসে বাংলা কণ্ঠ নেই। শুনতে চাইলে Microsoft Edge বা Android-এর Chrome-এ সাইটটি খোলো।',
   'cinema.opp.year': '{year} সাল',

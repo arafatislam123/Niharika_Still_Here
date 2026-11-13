@@ -397,18 +397,10 @@ export default function CinemaMode({
               </button>
             )}
           </div>
-          {sound && (
-            <p className="mt-2 text-center text-xs text-white/70">
-              {voiceKind === 'human'
-                ? t('cinema.voiceHuman')
-                : voiceKind === 'none'
-                  ? t('cinema.voiceNone')
-                  : t('cinema.voiceDevice')}
-            </p>
+          {/* Only shown when Bengali narration can't play, so silence is explained. */}
+          {sound && voiceKind === 'none' && (
+            <p className="mt-2 text-center text-xs text-white/70">{t('cinema.voiceNone')}</p>
           )}
-          <p className="mt-3 text-center text-xs text-white/60">
-            {t('cinema.label')} · <span className="hidden md:inline">{t('cinema.keys')}</span>
-          </p>
         </div>
       )}
 
