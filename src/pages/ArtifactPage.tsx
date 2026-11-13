@@ -10,9 +10,11 @@ import { FactCard, ReviewBadge, SourceLink, StatusBadge } from '../components/ui
 import { artifactModelNote, localizeArtifact, localizeWorld, useLang } from '../i18n';
 import { useNarration } from '../lib/narration';
 import { markLastSignalSeen, markStoryRead } from '../lib/progress';
+import { CINEMA_ARTIFACTS } from '../cinema/available';
 import NotFound from './NotFound';
 
 const ModelViewer3D = lazy(() => import('../components/ModelViewer3D'));
+const CinemaMode = lazy(() => import('../cinema/CinemaMode'));
 
 type Mode = 'read' | 'listen' | 'facts';
 
@@ -291,7 +293,11 @@ export default function ArtifactPage() {
   const { t, lang } = useLang();
   const raw = getArtifact(id);
   const [mode, setMode] = useState<Mode>('read');
-  useEffect(() => setMode('read'), [id]);
+  const [cinema, setCinema] = useState(false);
+  useEffect(() => {
+    setMode('read');
+    setCinema(false);
+  }, [id]);
   if (!raw) return <NotFound />;
 
   const artifact = localizeArtifact(raw, lang);
@@ -336,6 +342,21 @@ export default function ArtifactPage() {
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1.6fr_1fr]">
         <div>
+          {CINEMA_ARTIFACTS.has(artifact.id) && (
+            <button
+              type="button"
+              onClick={() => setCinema(true)}
+              className="group mb-5 flex w-full items-center gap-4 rounded-2xl border border-accent/60 bg-gradient-to-r from-raised to-surface p-4 text-left transition hover:border-accent"
+            >
+              <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-accent text-2xl text-space transition group-hover:scale-110">
+                ▶
+              </span>
+              <span>
+                <span className="block font-display text-xl font-bold">{t('cinema.button')}</span>
+                <span className="text-sm text-muted">{t('cinema.lead')}</span>
+              </span>
+            </button>
+          )}
           <div role="tablist" aria-label={t('story.modes')} className="mb-5 flex flex-wrap gap-2">
             {MODES.map((m) => (
               <button
@@ -389,6 +410,12 @@ export default function ArtifactPage() {
           </section>
         )}
       </div>
+
+      {cinema && (
+        <Suspense fallback={<div className="fixed inset-0 z-[100] bg-black" />}>
+          <CinemaMode artifact={artifact} onClose={() => setCinema(false)} />
+        </Suspense>
+      )}
 
       <div className="mt-10 flex justify-end">
         <Link to={`/artifacts/${next.id}`} className="btn-ghost">

@@ -13,6 +13,7 @@ import {
   prefersReducedMotion,
   webglAvailable,
 } from '../three/textures';
+import { buildMarsTerrain, buildSimpleRover, marsHeight } from '../three/marsScene';
 import type { Mission, Site } from './missions';
 
 type Phase = 'drive' | 'storm-sleep' | 'storm-drive' | 'cleared';
@@ -32,71 +33,7 @@ interface Hud {
 }
 
 const BOUND = 44;
-const height = (x: number, z: number) =>
-  Math.sin(x * 0.12) * 1.1 +
-  Math.cos(z * 0.09) * 1.3 +
-  Math.sin((x + z) * 0.05) * 1.8 +
-  Math.sin(x * 0.4) * Math.cos(z * 0.35) * 0.25;
-
-function buildRover(): THREE.Group {
-  const rover = new THREE.Group();
-  const white = new THREE.MeshStandardMaterial({ color: 0xe9e4da, roughness: 0.6 });
-  const dark = new THREE.MeshStandardMaterial({ color: 0x2b2f3a, roughness: 0.8 });
-  const panelMat = new THREE.MeshStandardMaterial({
-    color: 0x1d3c8f,
-    metalness: 0.5,
-    roughness: 0.35,
-  });
-
-  const body = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.6, 2.2), white);
-  body.position.y = 0.9;
-  rover.add(body);
-  const panel = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.08, 2.6), panelMat);
-  panel.position.y = 1.25;
-  rover.add(panel);
-  const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 1.3), white);
-  mast.position.set(0, 1.9, 0.8);
-  rover.add(mast);
-  const head = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.3, 0.3), white);
-  head.position.set(0, 2.6, 0.8);
-  rover.add(head);
-  const eyes = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.12, 0.05), dark);
-  eyes.position.set(0, 2.6, 0.97);
-  rover.add(eyes);
-  for (const x of [-0.95, 0.95]) {
-    for (const z of [-0.85, 0, 0.85]) {
-      const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.28, 16), dark);
-      wheel.rotation.z = Math.PI / 2;
-      wheel.position.set(x, 0.32, z);
-      wheel.userData.wheel = true;
-      rover.add(wheel);
-    }
-  }
-  return rover;
-}
-
-function buildTerrain(): THREE.Mesh {
-  const geo = new THREE.PlaneGeometry(BOUND * 2.6, BOUND * 2.6, 140, 140);
-  geo.rotateX(-Math.PI / 2);
-  const pos = geo.attributes.position;
-  const colors = new Float32Array(pos.count * 3);
-  const c = new THREE.Color();
-  for (let i = 0; i < pos.count; i++) {
-    const x = pos.getX(i);
-    const z = pos.getZ(i);
-    const y = height(x, z);
-    pos.setY(i, y);
-    const shade = 0.75 + (y + 4) * 0.05 + Math.sin(x * 1.7 + z * 1.3) * 0.03;
-    c.setRGB(0.72 * shade, 0.33 * shade, 0.19 * shade);
-    colors.set([c.r, c.g, c.b], i * 3);
-  }
-  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-  geo.computeVertexNormals();
-  return new THREE.Mesh(
-    geo,
-    new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, flatShading: true }),
-  );
-}
+const height = marsHeight;
 
 export default function RoverGame({
   mission,
@@ -168,7 +105,7 @@ export default function RoverGame({
     sun.position.set(30, 50, 20);
     scene.add(sun);
 
-    scene.add(buildTerrain());
+    scene.add(buildMarsTerrain(BOUND * 2.6));
     // Scattered rocks for a sense of motion.
     const rockMat = new THREE.MeshStandardMaterial({
       color: 0x5a2f1f,
@@ -234,7 +171,7 @@ export default function RoverGame({
       beacons.set(site.id, group);
     }
 
-    const rover = buildRover();
+    const rover = buildSimpleRover();
     scene.add(rover);
     const state = { x: 0, z: 8, heading: Math.PI, wheelSpin: 0 };
 
