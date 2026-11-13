@@ -22,7 +22,7 @@ to a NASA source.
 | **The Last Signal** | Step-by-step timeline of each mission's final days. | `/artifacts/:id` |
 | **Mission clock** | Planned vs actual lifetime (e.g. Opportunity: 90 sols → ~5,111). | `/artifacts/:id` |
 | **AI Explorer** | “If This Rover Could Talk”: answers only from verified facts, with source links; says “I don’t know” instead of guessing. | `/ask` |
-| **Mission Game** | 3 missions: Explore Mars, Find the Water Evidence, Save the Mission (dust storm + solar power). | `/game` |
+| **Mission Game** | 3 missions: Explore Mars, Find the Water Evidence, Save the Mission (dust storm + solar power). Realistic graphics: NASA’s rover model, noise-sculpted dunes and craters, instanced rocks with soft shadows, Mars sky, haze, bloom and filmic tone mapping, wheel tracks and dust, generated wind/motor sound. “High” and “Light” graphics modes (auto-detected). | `/game` |
 | **Timeline + Legacy** | 1962–2022 missions and how each led to the next. | `/timeline` |
 | **Quiz & badges** | 2 quizzes, 8 badges, progress saved in the browser (no accounts). | `/learn` |
 | **Sources** | Every NASA source and the fact-check status. | `/sources` |

@@ -7,13 +7,9 @@ import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } f
 import * as THREE from 'three';
 import { SourceLink } from '../components/ui';
 import { useLang } from '../i18n';
-import {
-  disposeTree,
-  makeGlowTexture,
-  prefersReducedMotion,
-  webglAvailable,
-} from '../three/textures';
-import { buildMarsTerrain, buildSimpleRover, marsHeight } from '../three/marsScene';
+import { prefersReducedMotion, webglAvailable } from '../three/textures';
+import { createMarsAudio, type MarsAudio } from './marsAudio';
+import { createMarsWorld, type Quality } from './marsWorld';
 import type { Mission, Site } from './missions';
 
 type Phase = 'drive' | 'storm-sleep' | 'storm-drive' | 'cleared';
@@ -33,17 +29,22 @@ interface Hud {
 }
 
 const BOUND = 44;
-const height = marsHeight;
 
 export default function RoverGame({
   mission,
+  quality,
   onComplete,
   onRestart,
 }: {
   mission: Mission;
+  quality: Quality;
   onComplete: (score: number) => void;
   onRestart: () => void;
 }) {
+  const [muted, setMuted] = useState(false);
+  const mutedRef = useRef(muted);
+  mutedRef.current = muted;
+  const audioRef = useRef<MarsAudio | null>(null);
   const mountRef = useRef<HTMLDivElement>(null);
   const keys = useRef({ forward: false, back: false, left: false, right: false });
   const game = useRef({
@@ -87,121 +88,31 @@ export default function RoverGame({
     const reduced = prefersReducedMotion();
     const storm = mission.storm;
 
-    const scene = new THREE.Scene();
-    const clearSky = new THREE.Color(0xd9a27a);
-    const stormSky = new THREE.Color(0x6b3d24);
-    scene.background = clearSky.clone();
-    scene.fog = new THREE.Fog(clearSky.clone(), 30, 90);
-
-    const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 300);
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const renderer = new THREE.WebGLRenderer({
+      antialias: quality === 'low',
+      powerPreference: 'high-performance',
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, quality === 'high' ? 2 : 1.5));
     renderer.domElement.setAttribute('aria-hidden', 'true');
     mount.appendChild(renderer.domElement);
 
-    const ambient = new THREE.AmbientLight(0xffe6d0, 0.7);
-    scene.add(ambient);
-    const sun = new THREE.DirectionalLight(0xffffff, 1.6);
-    sun.position.set(30, 50, 20);
-    scene.add(sun);
+    const world = createMarsWorld(renderer, quality, BOUND, mission.sites);
+    const { camera, beacons, obstacles, heightAt } = world;
+    camera.position.set(0, heightAt(0, 16) + 6, 16);
+    const state = { x: 0, z: 8, heading: Math.PI, speed: 0 };
 
-    scene.add(buildMarsTerrain(BOUND * 2.6));
-    // Scattered rocks for a sense of motion.
-    const rockMat = new THREE.MeshStandardMaterial({
-      color: 0x5a2f1f,
-      roughness: 1,
-      flatShading: true,
-    });
-    for (let i = 0; i < 120; i++) {
-      const x = (Math.sin(i * 12.9898) * 43758.5453) % 1;
-      const z = (Math.sin(i * 78.233) * 12345.678) % 1;
-      const px = x * BOUND * 1.1;
-      const pz = z * BOUND * 1.1;
-      const rock = new THREE.Mesh(
-        new THREE.DodecahedronGeometry(0.3 + Math.abs(x) * 0.7, 0),
-        rockMat,
-      );
-      rock.position.set(px, height(px, pz), pz);
-      rock.rotation.set(x * 3, z * 3, 0);
-      scene.add(rock);
-    }
+    const audio = createMarsAudio();
+    audioRef.current = audio;
+    audio.setMuted(mutedRef.current);
+    const startAudio = () => audio.start();
+    mount.addEventListener('pointerdown', startAudio);
 
-    const glowMap = makeGlowTexture('#ffffff');
-    const beacons = new Map<string, THREE.Group>();
-    for (const site of mission.sites) {
-      const group = new THREE.Group();
-      group.position.set(site.x, height(site.x, site.z), site.z);
-      const color = new THREE.Color(site.color);
-      const pillar = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.6, 0.6, 14, 16, 1, true),
-        new THREE.MeshBasicMaterial({
-          color,
-          transparent: true,
-          opacity: 0.25,
-          side: THREE.DoubleSide,
-          depthWrite: false,
-        }),
-      );
-      pillar.position.y = 7;
-      group.add(pillar);
-      const ring = new THREE.Mesh(
-        new THREE.RingGeometry(1.6, 2.1, 32),
-        new THREE.MeshBasicMaterial({
-          color,
-          side: THREE.DoubleSide,
-          transparent: true,
-          opacity: 0.8,
-        }),
-      );
-      ring.rotation.x = -Math.PI / 2;
-      ring.position.y = 0.15;
-      group.add(ring);
-      const glow = new THREE.Sprite(
-        new THREE.SpriteMaterial({
-          map: glowMap,
-          color,
-          blending: THREE.AdditiveBlending,
-          depthWrite: false,
-        }),
-      );
-      glow.position.y = 1.2;
-      glow.scale.set(3, 3, 1);
-      group.add(glow);
-      scene.add(group);
-      beacons.set(site.id, group);
-    }
-
-    const rover = buildSimpleRover();
-    scene.add(rover);
-    const state = { x: 0, z: 8, heading: Math.PI, wheelSpin: 0 };
-
-    // Dust particles for the storm.
-    const dustGeo = new THREE.BufferGeometry();
-    const dustCount = 900;
-    const dustPos = new Float32Array(dustCount * 3);
-    for (let i = 0; i < dustCount; i++)
-      dustPos.set([Math.random() * 60 - 30, Math.random() * 14, Math.random() * 60 - 30], i * 3);
-    dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
-    const dustMat = new THREE.PointsMaterial({
-      color: 0xc98a5a,
-      size: 0.25,
-      transparent: true,
-      opacity: 0,
-    });
-    const dust = new THREE.Points(dustGeo, dustMat);
-    scene.add(dust);
-
-    const resize = () => {
-      const { clientWidth: w, clientHeight: h } = mount;
-      renderer.setSize(w, h, false);
-      renderer.domElement.style.width = '100%';
-      renderer.domElement.style.height = '100%';
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-    };
+    const resize = () => world.setSize(mount.clientWidth, mount.clientHeight);
     const observer = new ResizeObserver(resize);
     observer.observe(mount);
     resize();
+    renderer.domElement.style.width = '100%';
+    renderer.domElement.style.height = '100%';
 
     const onKey = (down: boolean) => (e: KeyboardEvent) => {
       const map: Record<string, keyof typeof keys.current> = {
@@ -218,6 +129,7 @@ export default function RoverGame({
       if (!k) return;
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLButtonElement) return;
       e.preventDefault();
+      audio.start();
       if (!g.paused) keys.current[k] = down;
     };
     const keyDown = onKey(true);
@@ -226,7 +138,6 @@ export default function RoverGame({
     window.addEventListener('keyup', keyUp);
 
     const clock = new THREE.Timer();
-    const camTarget = new THREE.Vector3();
     let hudTimer = 0;
     let frame = 0;
     let stormMix = 0;
@@ -237,26 +148,34 @@ export default function RoverGame({
       const dt = Math.min(clock.getDelta(), 0.05);
       const t = clock.getElapsed();
 
+      let moving = false;
       if (!g.paused && !g.failed) {
         g.playTime += dt;
         const k = keys.current;
         const canDrive = g.phase !== 'storm-sleep' && g.battery > 0;
         const throttle = canDrive ? (k.forward ? 1 : 0) - (k.back ? 0.5 : 0) : 0;
         const turn = canDrive ? (k.left ? 1 : 0) - (k.right ? 1 : 0) : 0;
-        state.heading += turn * dt * 1.9;
-        const speed = throttle * 7;
-        state.x = THREE.MathUtils.clamp(
-          state.x + Math.sin(state.heading) * speed * dt,
+        // Smooth acceleration and braking instead of instant speed changes.
+        state.speed += (throttle * 7 - state.speed) * Math.min(1, dt * 2.5);
+        state.heading += turn * dt * 1.7;
+        const nx = THREE.MathUtils.clamp(
+          state.x + Math.sin(state.heading) * state.speed * dt,
           -BOUND,
           BOUND,
         );
-        state.z = THREE.MathUtils.clamp(
-          state.z + Math.cos(state.heading) * speed * dt,
+        const nz = THREE.MathUtils.clamp(
+          state.z + Math.cos(state.heading) * state.speed * dt,
           -BOUND,
           BOUND,
         );
-        state.wheelSpin += speed * dt * 2;
-        const moving = throttle !== 0 || turn !== 0;
+        // Big boulders block the way.
+        if (obstacles.some((o) => Math.hypot(o.x - nx, o.z - nz) < o.r + 1.3)) {
+          state.speed *= -0.2;
+        } else {
+          state.x = nx;
+          state.z = nz;
+        }
+        moving = Math.abs(state.speed) > 0.2 || turn !== 0;
 
         // --- energy ---
         const inStorm = g.phase === 'storm-sleep' || g.phase === 'storm-drive';
@@ -304,41 +223,16 @@ export default function RoverGame({
             break;
           }
         }
+      } else {
+        state.speed = 0;
       }
-
-      // --- visuals ---
-      const y = height(state.x, state.z);
-      rover.position.set(state.x, y, state.z);
-      rover.rotation.y = state.heading;
-      const ahead = height(
-        state.x + Math.sin(state.heading) * 1.2,
-        state.z + Math.cos(state.heading) * 1.2,
-      );
-      rover.rotation.x = -Math.atan2(ahead - y, 1.2) * 0.8;
-      for (const c of rover.children) if (c.userData.wheel) c.rotation.x = state.wheelSpin;
 
       const stormy = g.phase === 'storm-sleep' || g.phase === 'storm-drive' ? 1 : 0;
       stormMix += (stormy - stormMix) * Math.min(1, dt * 1.5);
-      (scene.background as THREE.Color).copy(clearSky).lerp(stormSky, stormMix);
-      const fog = scene.fog as THREE.Fog;
-      fog.color.copy(scene.background as THREE.Color);
-      fog.far = 90 - stormMix * 70;
-      fog.near = 30 - stormMix * 26;
-      sun.intensity = 1.6 - stormMix * 1.2;
-      dustMat.opacity = stormMix * 0.8;
-      dust.position.set(state.x, 0, state.z);
-      if (!reduced) dust.rotation.y = t * 0.6;
-
-      for (const b of beacons.values()) b.rotation.y = reduced ? 0 : t;
-
-      camTarget.set(
-        state.x - Math.sin(state.heading) * 9,
-        y + 5.5,
-        state.z - Math.cos(state.heading) * 9,
-      );
-      camera.position.lerp(camTarget, Math.min(1, dt * 3));
-      camera.lookAt(state.x, y + 1.2, state.z);
-      renderer.render(scene, camera);
+      world.update(dt, t, state, stormMix, reduced);
+      world.render();
+      audio.setDrive(moving ? Math.min(1, Math.abs(state.speed) / 7) : 0);
+      audio.setStorm(stormMix);
 
       hudTimer += dt;
       if (hudTimer > 0.1) {
@@ -356,7 +250,6 @@ export default function RoverGame({
         });
       }
     };
-    camera.position.set(0, 8, 18);
     animate();
 
     return () => {
@@ -364,11 +257,14 @@ export default function RoverGame({
       observer.disconnect();
       window.removeEventListener('keydown', keyDown);
       window.removeEventListener('keyup', keyUp);
-      disposeTree(scene);
+      mount.removeEventListener('pointerdown', startAudio);
+      audio.dispose();
+      audioRef.current = null;
+      world.dispose();
       renderer.dispose();
       renderer.domElement.remove();
     };
-  }, [mission, supported]);
+  }, [mission, supported, quality]);
 
   // Called after closing a site card: finish when every site is visited (and the storm, if any, is over).
   const afterSite = () => {
@@ -475,9 +371,24 @@ export default function RoverGame({
           ▶
         </button>
       </div>
-      <p className="pointer-events-none absolute bottom-4 left-4 hidden max-w-[60%] rounded-full bg-space/70 px-3 py-1 text-xs text-muted md:block">
-        {t('game.hint')}
-      </p>
+      <div className="absolute bottom-4 left-4 flex max-w-[60%] flex-col items-start gap-2">
+        <button
+          type="button"
+          aria-pressed={!muted}
+          onClick={() => {
+            const next = !muted;
+            setMuted(next);
+            audioRef.current?.start();
+            audioRef.current?.setMuted(next);
+          }}
+          className="rounded-full bg-space/80 px-3 py-1.5 text-xs font-semibold hover:bg-raised"
+        >
+          {muted ? t('game.soundOff') : t('game.soundOn')}
+        </button>
+        <p className="pointer-events-none hidden rounded-full bg-space/70 px-3 py-1 text-xs text-muted md:block">
+          {t('game.hint')}
+        </p>
+      </div>
 
       {modal && (
         <div

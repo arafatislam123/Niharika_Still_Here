@@ -1,5 +1,6 @@
 import { lazy, Suspense, useMemo, useState } from 'react';
 import { MISSIONS } from '../games/missions';
+import { initialQuality, saveQuality, type Quality } from '../games/quality';
 import { PageHeader } from '../components/ui';
 import { localizeMission, useLang } from '../i18n';
 import { completeMission, useProgress } from '../lib/progress';
@@ -10,6 +11,7 @@ export default function GamePage() {
   const { t, lang, n } = useLang();
   const [missionId, setMissionId] = useState(MISSIONS[0].id);
   const [run, setRun] = useState(0);
+  const [quality, setQuality] = useState<Quality>(initialQuality);
   const progress = useProgress();
   // Memoised: the game scene restarts whenever the mission object changes.
   const mission = useMemo(
@@ -61,11 +63,34 @@ export default function GamePage() {
           <strong>{t('game.goal')}</strong> {mission.goal} {mission.instructions}
         </p>
 
+        <div
+          role="group"
+          aria-label={t('game.graphics')}
+          className="mt-4 flex flex-wrap items-center gap-2 text-sm"
+        >
+          <span className="font-semibold text-muted">{t('game.graphics')}:</span>
+          {(['high', 'low'] as const).map((q) => (
+            <button
+              key={q}
+              type="button"
+              aria-pressed={quality === q}
+              onClick={() => {
+                setQuality(q);
+                saveQuality(q);
+              }}
+              className={`chip px-3 py-1.5 ${quality === q ? 'border-accent bg-accent text-space' : 'hover:border-accent'}`}
+            >
+              {q === 'high' ? t('game.graphicsHigh') : t('game.graphicsLow')}
+            </button>
+          ))}
+        </div>
+
         <div className="mt-4">
           <Suspense fallback={<div className="h-[70vh] animate-pulse rounded-3xl bg-surface" />}>
             <RoverGame
-              key={`${mission.id}-${run}-${lang}`}
+              key={`${mission.id}-${run}-${lang}-${quality}`}
               mission={mission}
+              quality={quality}
               onComplete={() => completeMission(mission.id)}
               onRestart={() => setRun((r) => r + 1)}
             />

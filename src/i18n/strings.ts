@@ -293,6 +293,11 @@ export const en = {
   'game.completeText':
     'You earned {score} science points and a new badge. Check the Learn page to see your badges.',
   'game.again': 'Play again',
+  'game.soundOn': '🔊 Sound on',
+  'game.soundOff': '🔇 Sound off',
+  'game.graphics': 'Graphics',
+  'game.graphicsHigh': 'High (laptop / desktop)',
+  'game.graphicsLow': 'Light (phone / older computer)',
 
   // timeline
   'timeline.eyebrow': 'Historical timeline',
@@ -698,6 +703,11 @@ export const bn: Record<StringKey, string> = {
   'game.completeText':
     'তুমি {score} বিজ্ঞান পয়েন্ট আর একটি নতুন ব্যাজ পেয়েছ। ব্যাজ দেখতে “শিখি” পাতায় যাও।',
   'game.again': 'আবার খেলো',
+  'game.soundOn': '🔊 শব্দ চালু',
+  'game.soundOff': '🔇 শব্দ বন্ধ',
+  'game.graphics': 'গ্রাফিক্স',
+  'game.graphicsHigh': 'উন্নত (ল্যাপটপ / কম্পিউটার)',
+  'game.graphicsLow': 'হালকা (ফোন / পুরোনো কম্পিউটার)',
 
   'timeline.eyebrow': 'ঐতিহাসিক সময়রেখা',
   'timeline.title': 'অভিযানের ৬০ বছর',
