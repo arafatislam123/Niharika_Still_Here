@@ -7,7 +7,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import type { Artifact } from '../data/types';
 import { useLang } from '../i18n';
-import { narrationSupported } from '../lib/narration';
+import { narrationSupported, pickBestVoice, voicesReady } from '../lib/narration';
+import { narrationUrl, RECORDED_NARRATION } from './available';
 import { buildSimpleRover, faceRoverForward, loadNasaModel } from '../three/marsScene';
 import { disposeTree, prefersReducedMotion } from '../three/textures';
 import { CINEMA, SCENE_BUILDERS, type CinemaScene, type SceneId } from './scenes';
@@ -56,7 +57,9 @@ export default function CinemaMode({
   const [loading, setLoading] = useState(true);
   const [chapter, setChapter] = useState(0);
   const [playing, setPlaying] = useState(true);
-  const [sound, setSound] = useState(narrationSupported());
+  const [sound, setSound] = useState(
+    narrationSupported() || (RECORDED_NARRATION[artifact.id] ?? []).length > 0,
+  );
   const [ended, setEnded] = useState(false);
   const [progress, setProgress] = useState(0);
   const [fading, setFading] = useState(false);
@@ -92,39 +95,70 @@ export default function CinemaMode({
     [chapters.length],
   );
 
+  // Human recordings for this language, if the team has added them.
+  const recorded = (RECORDED_NARRATION[artifact.id] ?? []).includes(lang);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [voiceKind, setVoiceKind] = useState<'human' | 'device' | 'none'>(
+    recorded ? 'human' : 'device',
+  );
+
   const togglePlay = useCallback(() => {
     const next = !ctl.current.playing;
     ctl.current.playing = next;
     setPlaying(next);
-    if (narrationSupported()) {
+    const audio = audioRef.current;
+    if (audio) {
+      if (next) void audio.play().catch(() => {});
+      else audio.pause();
+    } else if (narrationSupported()) {
       if (next) window.speechSynthesis.resume();
       else window.speechSynthesis.pause();
     }
   }, []);
 
-  // ---- narration: speak each chapter when it starts ------------------------------------
+  // ---- narration: a human recording if we have one, otherwise the best device voice ----
   useEffect(() => {
-    if (!narrationSupported()) return;
-    const synth = window.speechSynthesis;
-    synth.cancel();
     ctl.current.speaking = false;
     if (!sound || ended || loading) return;
-    const c = chapters[chapter];
-    const u = new SpeechSynthesisUtterance(`${c.title.replace(/^[^:]+:\s*/, '')}. ${c.text}`);
-    u.lang = lang === 'bn' ? 'bn-BD' : 'en-US';
-    const voice = synth
-      .getVoices()
-      .find((v) => v.lang.toLowerCase().startsWith(lang === 'bn' ? 'bn' : 'en'));
-    if (voice) u.voice = voice;
-    u.rate = 0.95;
-    u.onstart = () => (ctl.current.speaking = true);
-    u.onend = u.onerror = () => (ctl.current.speaking = false);
-    // If no Bengali voice exists, stay silent rather than reading Bengali with an English voice.
-    if (lang === 'bn' && !voice) return;
-    synth.speak(u);
-    if (!ctl.current.playing) synth.pause();
-    return () => synth.cancel();
-  }, [chapter, sound, ended, loading, lang, chapters]);
+
+    if (recorded) {
+      const audio = new Audio(narrationUrl(artifact.id, lang, chapter));
+      audioRef.current = audio;
+      audio.onplaying = () => (ctl.current.speaking = true);
+      audio.onended = () => (ctl.current.speaking = false);
+      audio.onerror = () => (ctl.current.speaking = false);
+      if (ctl.current.playing) void audio.play().catch(() => (ctl.current.speaking = false));
+      return () => {
+        audio.pause();
+        audioRef.current = null;
+      };
+    }
+
+    if (!narrationSupported()) return;
+    const synth = window.speechSynthesis;
+    let cancelled = false;
+    synth.cancel();
+    void voicesReady().then(() => {
+      if (cancelled) return;
+      const voice = pickBestVoice(lang);
+      // No Bengali voice on this device: stay silent rather than read Bengali with an English voice.
+      setVoiceKind(voice ? 'device' : 'none');
+      if (!voice) return;
+      const c = chapters[chapter];
+      const u = new SpeechSynthesisUtterance(`${c.title.replace(/^[^:]+:\s*/, '')}. ${c.text}`);
+      u.lang = voice.lang;
+      u.voice = voice;
+      u.rate = 0.95;
+      u.onstart = () => (ctl.current.speaking = true);
+      u.onend = u.onerror = () => (ctl.current.speaking = false);
+      synth.speak(u);
+      if (!ctl.current.playing) synth.pause();
+    });
+    return () => {
+      cancelled = true;
+      synth.cancel();
+    };
+  }, [chapter, sound, ended, loading, lang, chapters, recorded, artifact.id]);
 
   // ---- three.js: renderer, scenes and the animation loop ------------------------------
   useEffect(() => {
@@ -237,6 +271,7 @@ export default function CinemaMode({
       document.body.style.overflow = '';
       if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
       if (narrationSupported()) window.speechSynthesis.cancel();
+      audioRef.current?.pause();
       previous?.focus();
     };
   }, [onClose, togglePlay, goTo]);
@@ -333,7 +368,7 @@ export default function CinemaMode({
             >
               {t('cinema.next')}
             </button>
-            {narrationSupported() && (
+            {(narrationSupported() || recorded) && (
               <button
                 type="button"
                 className="rounded-full bg-white/15 px-4 py-2 hover:bg-white/25"
@@ -344,6 +379,15 @@ export default function CinemaMode({
               </button>
             )}
           </div>
+          {sound && (
+            <p className="mt-2 text-center text-xs text-white/70">
+              {voiceKind === 'human'
+                ? t('cinema.voiceHuman')
+                : voiceKind === 'none'
+                  ? t('cinema.voiceNone')
+                  : t('cinema.voiceDevice')}
+            </p>
+          )}
           <p className="mt-3 text-center text-xs text-white/60">
             {t('cinema.label')} · <span className="hidden md:inline">{t('cinema.keys')}</span>
           </p>

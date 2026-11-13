@@ -403,6 +403,11 @@ export const en = {
   'cinema.endText': 'Their missions ended. Their stories live on.',
   'cinema.replay': '↺ Watch again',
   'cinema.keys': 'Space: pause · ← →: chapters · Esc: close',
+  'cinema.voiceHuman': '🎙️ Voice: recorded by our team',
+  'cinema.voiceDevice':
+    '🔊 Voice: your device’s text-to-speech. Tip: Microsoft Edge has the most natural voices.',
+  'cinema.voiceNone':
+    'This device has no Bengali voice. Open the site in Microsoft Edge or Chrome on Android to hear it.',
   'cinema.opp.launch': 'Launch · July 2003',
   'cinema.opp.landing': 'Landing · January 2004 · Meridiani Planum',
   'cinema.opp.berries': 'Hematite “blueberries”: clues of ancient water',
@@ -804,6 +809,11 @@ export const bn: Record<StringKey, string> = {
   'cinema.endText': 'তাদের মিশন শেষ হয়েছে। তাদের গল্প বেঁচে আছে।',
   'cinema.replay': '↺ আবার দেখো',
   'cinema.keys': 'স্পেস: থামাও · ← →: অধ্যায় · Esc: বন্ধ',
+  'cinema.voiceHuman': '🎙️ কণ্ঠ: আমাদের দলের রেকর্ড করা',
+  'cinema.voiceDevice':
+    '🔊 কণ্ঠ: তোমার ডিভাইসের স্বয়ংক্রিয় কণ্ঠ। পরামর্শ: Microsoft Edge-এ সবচেয়ে স্বাভাবিক কণ্ঠ পাওয়া যায়।',
+  'cinema.voiceNone':
+    'এই ডিভাইসে বাংলা কণ্ঠ নেই। শুনতে চাইলে Microsoft Edge বা Android-এর Chrome-এ সাইটটি খোলো।',
   'cinema.opp.launch': 'উৎক্ষেপণ · জুলাই ২০০৩',
   'cinema.opp.landing': 'অবতরণ · জানুয়ারি ২০০৪ · মেরিডিয়ানি প্ল্যানাম',
   'cinema.opp.berries': 'হেমাটাইটের “ব্লুবেরি”: প্রাচীন পানির সূত্র',
