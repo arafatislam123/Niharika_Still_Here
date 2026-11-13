@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import type { WorldId } from '../data/types';
 import { useLang } from '../i18n';
+import { useFullscreen } from '../lib/fullscreen';
 import type { StringKey } from '../i18n/strings';
 import {
   disposeTree,
@@ -90,6 +91,17 @@ export default function SolarSystem({
   onSelectRef.current = onSelect;
   const [supported] = useState(webglAvailable);
   const { t, lang } = useLang();
+  // Clicking empty space opens the solar system in full screen.
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const fullscreen = useFullscreen(wrapRef);
+  const fsRef = useRef(fullscreen);
+  fsRef.current = fullscreen;
+  const select = (target: WorldId) => {
+    fsRef.current.exit();
+    onSelectRef.current(target);
+  };
+  const selectRef = useRef(select);
+  selectRef.current = select;
   const labelText = (l: Label) =>
     l.id === 'pioneer' ? (lang === 'bn' ? 'পাইওনিয়ার ১০' : 'Pioneer 10') : t(l.name);
 
@@ -261,7 +273,8 @@ export default function SolarSystem({
     const onUp = (e: PointerEvent) => {
       if (Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y) > 6) return; // was a drag
       const target = pick(e);
-      if (target) onSelectRef.current(target);
+      if (target) selectRef.current(target);
+      else if (!fsRef.current.active) fsRef.current.enter();
     };
     const onMove = (e: PointerEvent) => {
       renderer.domElement.style.cursor = pick(e) ? 'pointer' : 'grab';
@@ -340,7 +353,7 @@ export default function SolarSystem({
               key={l.id}
               type="button"
               className="btn-ghost"
-              onClick={() => onSelect(l.target!)}
+              onClick={() => select(l.target!)}
             >
               {labelText(l)}
             </button>
@@ -352,7 +365,14 @@ export default function SolarSystem({
 
   return (
     <div
-      className={`relative overflow-hidden rounded-3xl border border-line bg-black/40 ${className}`}
+      ref={wrapRef}
+      className={`overflow-hidden bg-black ${
+        fullscreen.mode === 'fake'
+          ? 'fixed inset-0 z-[100] h-[100dvh]'
+          : fullscreen.mode === 'native'
+            ? 'relative h-screen'
+            : `relative rounded-3xl border border-line bg-black/40 ${className}`
+      }`}
     >
       <div ref={mountRef} className="absolute inset-0" />
       <div className="pointer-events-none absolute inset-0">
@@ -390,8 +410,15 @@ export default function SolarSystem({
         )}
       </div>
       <p className="pointer-events-none absolute bottom-3 left-3 rounded-full bg-space/70 px-3 py-1 text-xs text-muted">
-        {t('solar.hint')}
+        {fullscreen.active ? t('solar.hintFullscreen') : t('solar.hint')}
       </p>
+      <button
+        type="button"
+        onClick={() => (fullscreen.active ? fullscreen.exit() : fullscreen.enter())}
+        className="absolute right-3 top-3 rounded-full bg-space/80 px-3 py-1.5 text-xs font-semibold text-ink hover:bg-raised"
+      >
+        {fullscreen.active ? t('solar.exitFullscreen') : t('solar.fullscreen')}
+      </button>
     </div>
   );
 }
