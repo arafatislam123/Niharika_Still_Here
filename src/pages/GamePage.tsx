@@ -1,4 +1,4 @@
-import { lazy, Suspense, useMemo, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { MISSIONS } from '../games/missions';
 import { initialQuality, saveQuality, type Quality } from '../games/quality';
 import { PageHeader } from '../components/ui';
@@ -13,6 +13,55 @@ export default function GamePage() {
   const [run, setRun] = useState(0);
   const [quality, setQuality] = useState<Quality>(initialQuality);
   const progress = useProgress();
+
+  // Full screen. Browsers only allow it after a tap/click, so it starts from "Start game".
+  // 'native' = real browser full screen; 'fake' = the game fills the window (e.g. iPhone Safari,
+  // which has no full screen for web pages).
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [started, setStarted] = useState(false);
+  const [fullscreen, setFullscreen] = useState<'none' | 'native' | 'fake'>('none');
+
+  const enterFullscreen = useCallback(() => {
+    const el = stageRef.current;
+    if (el?.requestFullscreen) {
+      el.requestFullscreen()
+        .then(() => setFullscreen('native'))
+        .catch(() => setFullscreen('fake'));
+    } else {
+      setFullscreen('fake');
+    }
+  }, []);
+
+  const exitFullscreen = useCallback(() => {
+    if (document.fullscreenElement) void document.exitFullscreen().catch(() => {});
+    setFullscreen('none');
+  }, []);
+
+  useEffect(() => {
+    // Leaving full screen with the browser's own Esc / back gesture.
+    const onChange = () => {
+      if (!document.fullscreenElement) setFullscreen((f) => (f === 'native' ? 'none' : f));
+    };
+    // Esc also leaves the "fake" full screen.
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setFullscreen((f) => (f === 'fake' ? 'none' : f));
+    };
+    document.addEventListener('fullscreenchange', onChange);
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('fullscreenchange', onChange);
+      window.removeEventListener('keydown', onKey);
+      if (document.fullscreenElement) void document.exitFullscreen().catch(() => {});
+    };
+  }, []);
+
+  useEffect(() => {
+    // No page scrolling behind the game while it fills the window.
+    document.body.style.overflow = fullscreen === 'fake' ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [fullscreen]);
   // Memoised: the game scene restarts whenever the mission object changes.
   const mission = useMemo(
     () =>
@@ -85,12 +134,31 @@ export default function GamePage() {
           ))}
         </div>
 
-        <div className="mt-4">
+        {/* This wrapper is what goes full screen, so restarting the game keeps full screen. */}
+        <div
+          ref={stageRef}
+          className={
+            fullscreen === 'fake'
+              ? 'fixed inset-0 z-[100] h-[100dvh] bg-black'
+              : fullscreen === 'native'
+                ? 'h-full bg-black'
+                : 'mt-4'
+          }
+        >
           <Suspense fallback={<div className="h-[70vh] animate-pulse rounded-3xl bg-surface" />}>
             <RoverGame
               key={`${mission.id}-${run}-${lang}-${quality}`}
               mission={mission}
               quality={quality}
+              started={started}
+              fullscreen={fullscreen !== 'none'}
+              onStart={() => {
+                setStarted(true);
+                enterFullscreen();
+              }}
+              onToggleFullscreen={() =>
+                fullscreen === 'none' ? enterFullscreen() : exitFullscreen()
+              }
               onComplete={() => completeMission(mission.id)}
               onRestart={() => setRun((r) => r + 1)}
             />

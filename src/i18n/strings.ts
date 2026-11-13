@@ -293,6 +293,10 @@ export const en = {
   'game.completeText':
     'You earned {score} science points and a new badge. Check the Learn page to see your badges.',
   'game.again': 'Play again',
+  'game.start': '▶ Start game',
+  'game.startNote': 'Opens in full screen · press Esc to leave',
+  'game.fullscreen': '⛶ Full screen',
+  'game.exitFullscreen': '✕ Exit full screen',
   'game.soundOn': '🔊 Sound on',
   'game.soundOff': '🔇 Sound off',
   'game.graphics': 'Graphics',
@@ -703,6 +707,10 @@ export const bn: Record<StringKey, string> = {
   'game.completeText':
     'তুমি {score} বিজ্ঞান পয়েন্ট আর একটি নতুন ব্যাজ পেয়েছ। ব্যাজ দেখতে “শিখি” পাতায় যাও।',
   'game.again': 'আবার খেলো',
+  'game.start': '▶ খেলা শুরু করো',
+  'game.startNote': 'পুরো স্ক্রিনে খুলবে · বের হতে Esc চাপো',
+  'game.fullscreen': '⛶ পুরো স্ক্রিন',
+  'game.exitFullscreen': '✕ পুরো স্ক্রিন বন্ধ',
   'game.soundOn': '🔊 শব্দ চালু',
   'game.soundOff': '🔇 শব্দ বন্ধ',
   'game.graphics': 'গ্রাফিক্স',

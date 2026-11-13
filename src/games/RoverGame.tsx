@@ -33,14 +33,25 @@ const BOUND = 44;
 export default function RoverGame({
   mission,
   quality,
+  started,
+  fullscreen,
+  onStart,
+  onToggleFullscreen,
   onComplete,
   onRestart,
 }: {
   mission: Mission;
   quality: Quality;
+  /** False until the player taps "Start game" (which also opens full screen). */
+  started: boolean;
+  fullscreen: boolean;
+  onStart: () => void;
+  onToggleFullscreen: () => void;
   onComplete: (score: number) => void;
   onRestart: () => void;
 }) {
+  const startedRef = useRef(started);
+  startedRef.current = started;
   const [muted, setMuted] = useState(false);
   const mutedRef = useRef(muted);
   mutedRef.current = muted;
@@ -149,7 +160,7 @@ export default function RoverGame({
       const t = clock.getElapsed();
 
       let moving = false;
-      if (!g.paused && !g.failed) {
+      if (startedRef.current && !g.paused && !g.failed) {
         g.playTime += dt;
         const k = keys.current;
         const canDrive = g.phase !== 'storm-sleep' && g.battery > 0;
@@ -303,7 +314,11 @@ export default function RoverGame({
   const pad = 'h-14 w-14 rounded-2xl bg-space/80 text-2xl active:bg-accent active:text-space';
 
   return (
-    <div className="relative h-[70vh] min-h-[460px] select-none overflow-hidden rounded-3xl border border-line">
+    <div
+      className={`relative select-none overflow-hidden ${
+        fullscreen ? 'h-full w-full' : 'h-[70vh] min-h-[460px] rounded-3xl border border-line'
+      }`}
+    >
       <div ref={mountRef} className="absolute inset-0" />
 
       {/* HUD */}
@@ -385,10 +400,37 @@ export default function RoverGame({
         >
           {muted ? t('game.soundOff') : t('game.soundOn')}
         </button>
+        <button
+          type="button"
+          aria-pressed={fullscreen}
+          onClick={onToggleFullscreen}
+          className="rounded-full bg-space/80 px-3 py-1.5 text-xs font-semibold hover:bg-raised"
+        >
+          {fullscreen ? t('game.exitFullscreen') : t('game.fullscreen')}
+        </button>
         <p className="pointer-events-none hidden rounded-full bg-space/70 px-3 py-1 text-xs text-muted md:block">
           {t('game.hint')}
         </p>
       </div>
+
+      {!started && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/45 p-6 text-center">
+          <button
+            type="button"
+            onClick={() => {
+              audioRef.current?.start();
+              onStart();
+            }}
+            className="btn-primary px-8 py-4 text-xl shadow-2xl"
+            autoFocus
+          >
+            {t('game.start')}
+          </button>
+          <p className="rounded-full bg-black/50 px-4 py-1.5 text-sm text-white/85">
+            {t('game.startNote')}
+          </p>
+        </div>
+      )}
 
       {modal && (
         <div
